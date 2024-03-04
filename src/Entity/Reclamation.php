@@ -147,7 +147,11 @@ class Reclamation
     public function __construct()  
 {  
     $this->date = new \DateTime();
+<<<<<<< HEAD
     $this->reponses = new ArrayCollection();  
+=======
+    $this->reponses = new ArrayCollection();
+>>>>>>> Gestion_Reclamation
 }
 
     /**
@@ -179,4 +183,9 @@ class Reclamation
 
         return $this;
     }
+<<<<<<< HEAD
+=======
+
+   
+>>>>>>> Gestion_Reclamation
 }
