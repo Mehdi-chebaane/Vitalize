@@ -15,31 +15,25 @@ use App\Form\CommentaireType;
 use App\Entity\Users;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Knp\Component\Pager\PaginatorInterface;
 
 class PublicationBackController extends AbstractController
 {
     #[Route('/admin/publication', name: 'app_publication_back')]
-public function index(PublicationRepository $publicationRepository, Request $request, PaginatorInterface $paginator): Response
-{
-    $type = $request->query->get('type');
+    public function index(PublicationRepository $publicationRepository, Request $request): Response
+    {
+        $type = $request->query->get('type');
 
-    // Check if the type query parameter is set and filter publications accordingly
-    $query = $type && in_array($type, ['Nutrition', 'Progrés']) ?
-        $publicationRepository->findBy(['type' => $type]) :
-        $publicationRepository->findAllQuery(); // Assuming you have a custom method to get a query
+        // Check if the type query parameter is set and filter publications accordingly
+        if ($type && in_array($type, ['Nutrition', 'Progrés'])) {
+            $publications = $publicationRepository->findBy(['type' => $type]);
+        } else {
+            $publications = $publicationRepository->findAll();
+        }
 
-    // Paginate the results
-    $publications = $paginator->paginate(
-        $query, /* query NOT result */
-        $request->query->getInt('page', 1), /*page number*/
-        3 /*limit per page*/
-    );
-
-    return $this->render('admin/publication/index.html.twig', [
-        'publications' => $publications,
-    ]);
-}
+        return $this->render('admin/publication/index.html.twig', [
+            'publications' => $publications,
+        ]);
+    }
 
     #[Route('/admin/publication/new', name: 'back_publication_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response

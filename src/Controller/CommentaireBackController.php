@@ -11,28 +11,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Knp\Component\Pager\PaginatorInterface;
 
 class CommentaireBackController extends AbstractController
 {
     #[Route('/admin/commentaire', name: 'back_commentaire_back')]
-    public function index(CommentaireRepository $commentaireRepository, Request $request, PaginatorInterface $paginator): Response
-{
-    // Get all comments query
-    $query = $commentaireRepository->createQueryBuilder('c')
-        ->getQuery();
-
-    // Paginate the results
-    $commentaires = $paginator->paginate(
-        $query, 
-        $request->query->getInt('page', 1), 
-        5
-    );
-
-    return $this->render('admin/commentaire/index.html.twig', [
-        'commentaires' => $commentaires,
-    ]);
-}
+    public function index(CommentaireRepository $commentaireRepository): Response
+    {
+        return $this->render('admin/commentaire/index.html.twig', [
+            'commentaires' => $commentaireRepository->findAll(),
+        ]);
+    }
 
     #[Route('/admin/commentaire/new', name: 'new_commentaire_back', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
