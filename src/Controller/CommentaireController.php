@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Notification\NewCommentNotification;
 use Symfony\Component\Notifier\NotifierInterface;
-use Symfony\Component\Form\FormView; 
+use Symfony\Component\Form\FormView; // Move this line outside the class definition
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Notifier\Recipient\Recipient;
 

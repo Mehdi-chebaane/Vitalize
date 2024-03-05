@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Commande;
 use App\Entity\Users;
 use App\Form\CommandeType;
+use App\Form\CommandeType1;
 use App\Repository\CommandeRepository;
 use App\Repository\MealRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -104,6 +105,24 @@ public function new(Request $request, EntityManagerInterface $entityManager, Mea
     public function edit(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(CommandeType::class, $commande);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('front/commande/edit.html.twig', [
+            'commande' => $commande,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/admin/{id}/edit', name: 'admin_commande_edit', methods: ['GET', 'POST'])]
+    public function editadmin(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(CommandeType1::class, $commande);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

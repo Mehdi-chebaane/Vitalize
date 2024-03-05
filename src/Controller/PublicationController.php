@@ -1,11 +1,16 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\Users;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use App\Entity\Publication;
 use App\Form\PublicationType;
 use App\Repository\PublicationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use App\Service\RecommendationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Service\ProfanityFilter;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +27,12 @@ use Endroid\QrCode\Factory\QrCodeFactoryInterface;
 use App\Service\QrCodeService; // Include the QrCodeService
 
 use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Label\Label;
+use Endroid\QrCode\Logo\Logo;
+use Endroid\QrCode\Writer\PngWriter;
+use Endroid\QrCode\Label\Font\NotoSans;
+use Endroid\QrCode\Color\Color;
+
 use Symfony\Component\Notifier\Recipient\SlackRecipient;
 use Symfony\Component\Notifier\NotifierInterface;
 
@@ -29,15 +40,24 @@ use Symfony\Component\Notifier\NotifierInterface;
 #[Route('publication')]
 class PublicationController extends AbstractController
 {
-  
-    
-    
+    private RecommendationService $recommendationService;
+
+    public function __construct(RecommendationService $recommendationService)
+    {
+        $this->recommendationService = $recommendationService;
+    }
+
     #[Route('/', name: 'app_publication_index', methods: ['GET'])]
     public function index(PublicationRepository $publicationRepository, Request $request): Response
     {
-        $type = $request->query->get('type');
+        // Get the currently authenticated user
+        $user = $this->getUser();
+        
+        // Generate recommendations for the user
+        $recommendations = $this->recommendationService->generateRecommendations($user);
 
-        // Check if the type query parameter is set and filter publications accordingly
+        // Your existing logic for fetching publications
+        $type = $request->query->get('type');
         if ($type && in_array($type, ['Nutrition', 'Progrés'])) {
             $publications = $publicationRepository->findBy(['type' => $type]);
         } else {
@@ -46,161 +66,306 @@ class PublicationController extends AbstractController
 
         return $this->render('front/publication/index.html.twig', [
             'publications' => $publications,
+            'recommendations' => $recommendations, // Pass recommendations to the template
         ]);
     }
+
+    
+    
+     
+     #[Route('/publication/increment-view/{id}', name: 'app_increment_publication_view', methods: ['POST'])]
+    public function incrementView(Publication $publication): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+
+        // Increment views count
+        $views = $publication->getViews() + 1;
+        $publication->setViews($views);
+        $entityManager->flush();
+
+        return new JsonResponse(['success' => true]);
+    }
+
+
+   
+    #[Route('/commentaire/{parentId}/reply', name: 'reply_to_comment', methods: ['GET', 'POST'])]
+    public function replyToComment(Request $request, $parentId): Response
+    {
+        // Fetch the parent comment if needed, you can skip this if not required
+        $parentComment = $this->getDoctrine()->getRepository(Commentaire::class)->find($parentId);
+    
+        // Create a new Commentaire entity
+        $commentaire = new Commentaire();
+        $currentUser = $this->getUser();
+    
+    
+
+
+    $user = $this->getUser();
+    if ($user instanceof User) {
+        $commentaire->setIdUser($user);
+    }
+
+   
+    
+    $commentaire->setIdUser($currentUser);
+        // Create the form, passing the Commentaire entity
+        $form = $this->createForm(CommentaireType::class, $commentaire);
+    
+        // Handle form submission
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Set the parent comment ID
+            $parentCommentEntity = $this->getDoctrine()->getRepository(Commentaire::class)->find($parentId);
+
+            // Set the parent comment entity
+            $commentaire->setParentComment($parentCommentEntity);
+    
+            // Save the reply to the database
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($commentaire);
+            $entityManager->flush();
+    
+            // Redirect to a success page or back to the comment thread
+            return $this->redirectToRoute('app_publication_index', ['commentId' => $parentId]);
+        }
+    
+        // Render the reply form, passing the form
+        return $this->render('front/commentaire/reply.html.twig', [
+            'form' => $form->createView(),
+            'parentComment' => $parentComment, // Optional: pass the parent comment to the template
+        ]);
+    }
+    
+
+
+
+
+
+    #[Route('/{id}/qr-code', name: 'publication_qr_code')]
+    public function generateQrCode(int $id): Response
+    {
+    
+        $publication = $this->getDoctrine()->getRepository(Publication::class)->find($id);
+
+        if (!$publication) {
+            throw $this->createNotFoundException('The Publication does not exist');
+        }
+
+       
+        $qrCodeString = sprintf(
+            "Title: %s\nContent: %s",
+            $publication->getTitre(),
+            $publication->getDescription()
+        );
+
+    
+        $qrCode = new QrCode($qrCodeString);
+
+         $qrCode->setSize(100);
+         $qrCode->setMargin(10);
+
+        $writer = new PngWriter();
+
+   
+        $qrCodeData = $writer->write($qrCode)->getString();
+
+    
+        $response = new Response($qrCodeData, Response::HTTP_OK, ['Content-Type' => 'image/png']);
+
+        return $response;
+    }
+    
+    
+    
 
     #[Route('/publication/{id}/like', name: 'like_publication', methods: ['POST'])]
 public function likePublication($id, EntityManagerInterface $entityManager): Response
 {
-    // Get the current user
+
     $currentUser = $this->getUser();
 
-    // Find the publication by its ID
+ 
     $publication = $entityManager->getRepository(Publication::class)->find($id);
 
-    // Find the existing react by the current user and publication
+   
     $react = $entityManager->getRepository(React::class)->findOneBy([
         'id_user' => $currentUser,
         'id_pub' => $publication,
     ]);
 
-    // If the react exists, toggle the like count
+ 
     if ($react) {
-        // Get the current like count
+      
         $likeCount = $react->getLikeCount();
 
-        // Update the like count based on the current state
+     
         if ($likeCount === 1) {
-            // If the like count is 1, decrement it
+        
             $react->decrementLikeCount();
         } else {
-            // If the like count is 0 or null, increment it
             $react->incrementLikeCount();
+           
+            if ($react->getDislikeCount() === 1) {
+                $react->decrementDislikeCount();
+            }
         }
     } else {
-        // Create a new React instance
+       
         $react = new React();
 
-        // Set the current user as the user for the react
+     
         $react->setIdUser($currentUser);
 
-        // Set the publication for the react
+    
         $react->setIdPub($publication);
 
-        // Set the like count to 1
+    
         $react->setLikeCount(1);
 
-        // Persist the react changes
+       
         $entityManager->persist($react);
     }
 
-    // Flush changes to the database
     $entityManager->flush();
 
-    // Redirect to the publication page or wherever you want
+  
     return $this->redirectToRoute('app_publication_show', ['id' => $id]);
 }
-
-
-
 
 #[Route('/publication/{id}/dislike', name: 'dislike_publication', methods: ['POST'])]
 public function dislikePublication($id, EntityManagerInterface $entityManager): Response
 {
-    // Get the current user
+    
     $currentUser = $this->getUser();
 
-    // Find the publication by its ID
+   
     $publication = $entityManager->getRepository(Publication::class)->find($id);
 
-    // Find the existing react by the current user and publication
+   
     $react = $entityManager->getRepository(React::class)->findOneBy([
         'id_user' => $currentUser,
         'id_pub' => $publication,
     ]);
 
-    // If the react exists, toggle the dislike count
+   
     if ($react) {
-        // Get the current dislike count
+       
         $dislikeCount = $react->getDislikeCount();
 
-        // Update the dislike count based on the current state
+       
         if ($dislikeCount === 1) {
-            // If the dislike count is 1, decrement it
+            
             $react->decrementDislikeCount();
         } else {
-            // If the dislike count is 0 or null, increment it
+           
             $react->incrementDislikeCount();
+        
+            if ($react->getLikeCount() === 1) {
+                $react->decrementLikeCount();
+            }
         }
     } else {
-        // Create a new React instance
+       
         $react = new React();
 
-        // Set the current user as the user for the react
+     
         $react->setIdUser($currentUser);
 
-        // Set the publication for the react
+      
         $react->setIdPub($publication);
 
-        // Set the dislike count to 1
+     
         $react->setDislikeCount(1);
 
-        // Persist the react changes
         $entityManager->persist($react);
     }
 
-    // Flush changes to the database
+   
     $entityManager->flush();
 
-    // Redirect to the publication page or wherever you want
+  
     return $this->redirectToRoute('app_publication_show', ['id' => $id]);
 }
 
 
    
 
-    #[Route('/new', name: 'app_publication_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $publication = new Publication();
-        $currentUser = $this->getUser();
-        $publication->setIdUser($currentUser); // Assuming you have a method like setIdUser
-        
-        
+#[Route('/new', name: 'app_publication_new', methods: ['GET', 'POST'])]
+public function new(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+{
+    $publication = new Publication();
+    $currentUser = $this->getUser();
+    $publication->setIdUser($currentUser);
 
-        $form = $this->createForm(PublicationType::class, $publication);
-        
-        $form->handleRequest($request);
+    $form = $this->createForm(PublicationType::class, $publication);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('image')->getData();
-            if ($imageFile) {
-                $imageName = md5(uniqid()) . '.' . $imageFile->guessExtension();
-                $imageFile->move(
-                    $this->getParameter('kernel.project_dir') . '/public/uploads/images',
-                    $imageName
-                );
-                $publication->setImage('/uploads/images/' . $imageName);
-            }
+    $form->handleRequest($request);
 
-            $entityManager->persist($publication);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_publication_index', [], Response::HTTP_SEE_OTHER);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $imageFile = $form->get('image')->getData();
+        if ($imageFile) {
+            $imageName = md5(uniqid()) . '.' . $imageFile->guessExtension();
+            $imageFile->move(
+                $this->getParameter('kernel.project_dir') . '/public/uploads/images',
+                $imageName
+            );
+            $publication->setImage('/uploads/images/' . $imageName);
         }
 
-        return $this->render('front/publication/new.html.twig', [
-            'publication' => $publication,
-            'form' => $form->createView(),
-        ]);
+        $entityManager->persist($publication);
+        $entityManager->flush();
+
+        // Send email to all users
+        $this->sendPublicationNotificationEmail($mailer, $currentUser, $publication);
+
+        return $this->redirectToRoute('app_publication_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    return $this->render('front/publication/new.html.twig', [
+        'publication' => $publication,
+        'form' => $form->createView(),
+    ]);
+}
+
+private function sendPublicationNotificationEmail(MailerInterface $mailer, UserInterface $currentUser, Publication $publication): void
+{
+    $users = $this->getDoctrine()->getRepository(Users::class)->findAll();
+        foreach ($users as $user) {
+        // Skip sending email to the user who created the publication
+        if ($user->getId() === $currentUser->getId()) {
+            continue;
+        }
+
+        $email = (new TemplatedEmail())
+            ->from(new Address($currentUser->getEmail(), $currentUser->getUsername()))
+            ->to($user->getEmail())
+            ->subject('New Publication Created')
+            ->htmlTemplate('emails/new_publication_notification.html.twig')
+            ->context([
+                'currentUser' => $currentUser,
+                'publication' => $publication,
+                // Add any additional variables you need in the email template
+            ]);
+
+        $mailer->send($email);
+    }
+}
+
+
 
 
     
 
 #[Route('/{id}', name: 'app_publication_show', methods: ['GET', 'POST'])]
 public function show(Request $request, Publication $publication, EntityManagerInterface $entityManager,ProfanityFilter $profanityFilter ): Response
-{
+{   
+    
+    
+    
+    $views = $publication->getViews();
+    $publication->setViews($views + 1);
+    $entityManager->flush();
     $commentaire = new Commentaire();
     
     $currentUser = $this->getUser();
@@ -208,17 +373,16 @@ public function show(Request $request, Publication $publication, EntityManagerIn
     $commentForm = $this->createForm(CommentaireType::class, $commentaire);
     $commentForm->handleRequest($request);
 
-    // Check if the user is authenticated before setting the id_user
+
     $user = $this->getUser();
     if ($user instanceof User) {
         $commentaire->setIdUser($user);
     }
 
-    // Automatically set the id_pub to the id of the current publication
+   
     $commentaire->setIdPub($publication);
     $commentaire->setIdUser($currentUser);
 
-    // Initialize $qrCode variable
     $qrCode = null;
 
     if ($commentForm->isSubmitted() && $commentForm->isValid()) {
@@ -228,11 +392,11 @@ public function show(Request $request, Publication $publication, EntityManagerIn
         $entityManager->persist($commentaire);
         $entityManager->flush();
 
-        // Redirect back to the publication page after submitting the comment
+        
         return $this->redirectToRoute('app_publication_show', ['id' => $publication->getId()]);
     }
 
-    // Access the QR code factory service
+ 
     
 
     return $this->render('front/publication/show.html.twig', [
