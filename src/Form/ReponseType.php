@@ -9,6 +9,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
@@ -17,7 +18,17 @@ class ReponseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            
+
+        ->add('etat', ChoiceType::class, [
+            'label' => 'Etat',
+            'mapped' => false, 
+            'choices' => [
+                'En Attente' => 'Plainte',
+                'En Cours' => 'En Cours',
+                'Resolu' => 'Resolu',
+            ],
+            'placeholder' => 'Etat de la Reclamation', 
+        ])
             ->add('message', TextareaType::class , [
                 'constraints' => [
                     new Assert\NotBlank(),

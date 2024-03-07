@@ -25,13 +25,17 @@ use Symfony\Component\Notifier\Notification\Notification;
 use Endroid\QrCodeBundle\Response\QrCodeResponse;
 use Endroid\QrCode\Factory\QrCodeFactoryInterface;
 use App\Service\QrCodeService; // Include the QrCodeService
-
+use App\Entity\PublicationView;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Label\Label;
 use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Label\Font\NotoSans;
 use Endroid\QrCode\Color\Color;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+
+use Symfony\Component\HttpClient\HttpClient;
 
 use Symfony\Component\Notifier\Recipient\SlackRecipient;
 use Symfony\Component\Notifier\NotifierInterface;
@@ -40,6 +44,30 @@ use Symfony\Component\Notifier\NotifierInterface;
 #[Route('publication')]
 class PublicationController extends AbstractController
 {
+    
+
+     #[Route('/send-interactions', name: 'send_interactions', methods: ['POST'])]
+    public function sendInteractionsToPythonAPI(Request $request): Response
+    {
+       
+        $interactionData = $request->getContent();
+
+        
+        $httpClient = HttpClient::create();
+        $response = $httpClient->request('POST', 'http://localhost:5000/recommendations', [
+            'json' => json_decode($interactionData, true),
+        ]);
+
+        
+        $recommendations = $response->toArray();
+
+        
+        return new JsonResponse($recommendations);
+    }
+
+
+
+
     private RecommendationService $recommendationService;
 
     public function __construct(RecommendationService $recommendationService)
@@ -184,8 +212,6 @@ public function likePublication($id, EntityManagerInterface $entityManager): Res
 {
 
     $currentUser = $this->getUser();
-
- 
     $publication = $entityManager->getRepository(Publication::class)->find($id);
 
    
@@ -193,8 +219,6 @@ public function likePublication($id, EntityManagerInterface $entityManager): Res
         'id_user' => $currentUser,
         'id_pub' => $publication,
     ]);
-
- 
     if ($react) {
       
         $likeCount = $react->getLikeCount();
@@ -212,24 +236,14 @@ public function likePublication($id, EntityManagerInterface $entityManager): Res
         }
     } else {
        
-        $react = new React();
-
-     
+        $react = new React(); 
         $react->setIdUser($currentUser);
-
-    
-        $react->setIdPub($publication);
-
-    
+        $react->setIdPub($publication);   
         $react->setLikeCount(1);
-
-       
+      
         $entityManager->persist($react);
     }
-
-    $entityManager->flush();
-
-  
+    $entityManager->flush(); 
     return $this->redirectToRoute('app_publication_show', ['id' => $id]);
 }
 
@@ -358,51 +372,61 @@ private function sendPublicationNotificationEmail(MailerInterface $mailer, UserI
     
 
 #[Route('/{id}', name: 'app_publication_show', methods: ['GET', 'POST'])]
-public function show(Request $request, Publication $publication, EntityManagerInterface $entityManager,ProfanityFilter $profanityFilter ): Response
-{   
-    
-    
-    
-    $views = $publication->getViews();
-    $publication->setViews($views + 1);
-    $entityManager->flush();
-    $commentaire = new Commentaire();
-    
+public function show(Request $request, Publication $publication, EntityManagerInterface $entityManager, ProfanityFilter $profanityFilter): Response
+{
+    // Get the current user
     $currentUser = $this->getUser();
-    
+
+    // Check if the current user has already viewed the publication
+    $existingView = $entityManager->getRepository(PublicationView::class)->findOneBy([
+        'id_user' => $currentUser,
+        'id_pub' => $publication,
+    ]);
+
+    // If the user has not viewed the publication, increment the view count
+    if (!$existingView) {
+        // Increment the view count
+        $views = $publication->getViews() ?? 0;
+        $publication->setViews($views + 1);
+
+        // Create and persist a new PublicationView entity
+        $publicationView = new PublicationView();
+        $publicationView->setIdUser($currentUser);
+        $publicationView->setIdPub($publication);
+        $publicationView->setView(1); // Set view count to 1
+        $entityManager->persist($publicationView);
+    }
+
+    // Flush all changes to the database
+    $entityManager->flush();
+
+    // Create a new Commentaire instance
+    $commentaire = new Commentaire();
     $commentForm = $this->createForm(CommentaireType::class, $commentaire);
     $commentForm->handleRequest($request);
 
-
-    $user = $this->getUser();
-    if ($user instanceof User) {
-        $commentaire->setIdUser($user);
-    }
-
-   
-    $commentaire->setIdPub($publication);
+    // Set the current user to the commentaire
     $commentaire->setIdUser($currentUser);
 
-    $qrCode = null;
+    // Set the publication to the commentaire
+    $commentaire->setIdPub($publication);
 
+    // Handle form submission
     if ($commentForm->isSubmitted() && $commentForm->isValid()) {
         $contenu = $commentaire->getContenu();
-            $filteredContenu = $profanityFilter->filter($contenu);
-            $commentaire->setContenu($filteredContenu);
+        $filteredContenu = $profanityFilter->filter($contenu);
+        $commentaire->setContenu($filteredContenu);
         $entityManager->persist($commentaire);
         $entityManager->flush();
 
-        
+        // Redirect back to the same page after form submission
         return $this->redirectToRoute('app_publication_show', ['id' => $publication->getId()]);
     }
 
- 
-    
-
+    // Render the template with necessary data
     return $this->render('front/publication/show.html.twig', [
         'publication' => $publication,
         'commentForm' => $commentForm->createView(),
-        
     ]);
 }
 

@@ -1,0 +1,42 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Send email!{% endblock %}
+
+{% block body %}
+<div class="col-lg-6" style="margin-top: 100px; margin-left: auto; margin-right: auto;">
+    <div class="info-item" data-aos="fade" data-aos-delay="500">
+
+  <div class="container section-title" data-aos="fade-up">
+        <h2>Repondez par Email</h2>
+        <h4>Sujet reclamation: <strong>{{ sujet }}</strong></h4>
+        </div>
+      </div>
+        {{ form_start(form, { 'method': 'POST', 'action': path('newRepAdmin', {'reclamationId': reclamationId}) }) }}
+        <div class="row gy-4">
+        <div class="col-md-12">
+        {{ form_row(form.etat, {
+                'label': false,
+                'attr': {'class': 'btn custom-btn btn-sm dropdown-toggle'}
+            }) }}
+        </div>    
+        <div class="col-md-12">
+        
+            {{ form_row(form.message, {
+                'label': false,
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'this is your email body',
+                    'rows': 6,
+                }
+            }) }}
+        </div>
+
+        <div class="col-md-12 text-center" style="margin-bottom: 100px;">        
+            {{ form_widget(form.submitButton, {'attr': {'class': 'btn custom-btn', 'style': 'background-color: #1F51FF;'}}) }}
+        </div>
+        </div>
+    </div>
+</div>
+
+{{ form_end(form) }}
+{% endblock %}

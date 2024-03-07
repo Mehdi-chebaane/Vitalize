@@ -65,6 +65,38 @@ class Fichepatient
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $other = null;
 
+    #[ORM\ManyToOne(targetEntity: Users::class)]
+    #[ORM\JoinColumn(name: "id", referencedColumnName: "id")]
+    private ?Users $doctor;
+
+    public function getDoctor(): ?Users
+    {
+        return $this->doctor;
+    }
+
+    public function setDoctor(?Users $doctor): self
+    {
+        $this->doctor = $doctor;
+        return $this;
+    }
+    public function getNom(): ?string
+{
+    if ($this->doctor) {
+        return $this->doctor->getNom();
+    }
+    
+    return null;
+}
+public function getPrenom(): ?string
+{
+    if ($this->doctor) {
+        return $this->doctor->getPrenom();
+    }
+    
+    return null;
+}
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -201,4 +233,24 @@ class Fichepatient
 
         return $this;
     }
+
+    public function getAllAttributes(): array
+{
+    return [
+        'id' => $this->getId(),
+        'weight' => $this->getWeight(),
+        'muscle_mass' => $this->getMuscleMass(),
+        'height' => $this->getHeight(),
+        'allergies' => $this->getAllergies(),
+        'illnesses' => $this->getIllnesses(),
+        'breakfast' => $this->getBreakfast(),
+        'midday' => $this->getMidday(),
+        'dinner' => $this->getDinner(),
+        'snacks' => $this->getSnacks(),
+        'calories' => $this->getCalories(),
+        'other' => $this->getOther(),
+    ];
+}
+
+
 }

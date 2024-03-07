@@ -44,7 +44,12 @@
                         <div class="text-center mt-3" style="height: 150px;">
                             <h5 class="text-center">{{ publication.titre }}</h5>
                             <p>{{ publication.description|slice(0, 70) }}{% if publication.description|length > 10 %}...{% endif %}</p>
-                            <p><i class="fas fa-eye"></i> {{ publication.views }}</p> {# Add this line to display views with eye icon #}
+                            {# Loop through publicationViews collection to sum up views #}
+                            {% set totalViews = 0 %}
+                            {% for publicationView in publication.publicationViews %}
+                                {% set totalViews = totalViews + publicationView.getView() %}
+                            {% endfor %}
+                            <p><i class="fas fa-eye"></i> {{ totalViews }}</p> {# Show total views #}
                             <a href="{{ path('app_publication_show', {'id': publication.id}) }}" class="btn btn-primary btn-sm" style="width: 100px; display: block; margin: 0 auto;">Read more</a>
                         </div>
                     </div>
@@ -53,6 +58,7 @@
                 <p>No publications available</p>
             {% endfor %}
         </div>
+        
         
 
     <!-- Section for displaying recommended publications -->

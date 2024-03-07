@@ -2,17 +2,19 @@
 
 namespace App\Form;
 
+use App\Entity\Users;
 use App\Entity\Reclamation;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Validator\Constraints  as Assert;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 
 
@@ -22,28 +24,37 @@ use Symfony\Component\Validator\Constraints  as Assert;
 
 class ReclamationType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $builder
-           
-            ->add('type', ChoiceType::class, [
-                'choices' => [
-                    'Plainte' => 'Plainte',
-                    'Demande information' => 'Demande information',
-                    'Suggestion' => 'Suggestion',
-                    
-                ],
-                'placeholder' => 'Type de Reclamation', 
-            ])
-            ->add('medecin' , ChoiceType::class, [
-                'choices' => [
-                    
-                    'medecinX' => 'medecinX',
-                    'medecinY' => 'medecinY',
-                    'medecinZ' => 'medecinZ',
-                ],
-                'placeholder' => 'Veuillez identifier ', // Optional placeholder text
-            ])
+        $this->entityManager = $entityManager;
+    }  
+    
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+{   
+    $builder
+    
+    ->add('type', ChoiceType::class, [
+        'choices' => [
+            'Plainte' => 'Plainte',
+            'Demande information' => 'Demande information',
+            'Suggestion' => 'Suggestion',
+        ],
+        'placeholder' => 'Type',  
+        'constraints' => [
+            new Assert\NotBlank(),
+        ],
+    ])
+    
+    ->add('medecin', ChoiceType::class, [
+        'choices' => $this->getMedecinChoices(),
+        'placeholder' => 'Médecin',  
+        'constraints' => [
+            new Assert\NotBlank(),
+        ],
+    ])
+    
             ->add('sujet', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Sujet',  ],
@@ -85,6 +96,18 @@ class ReclamationType extends AbstractType
                 'label' => 'Send Reclamation',
             ]);
         
+    }
+
+    private function getMedecinChoices(): array
+    {
+        $medecinUsers = $this->entityManager->getRepository(Users::class)->findByRole('ROLE_MEDECIN');
+    
+        $choices = [];
+        foreach ($medecinUsers as $user) {
+            $choices[$user->getNom()] = $user->getId(); // Using full name as key and ID as value
+        }
+    
+        return $choices;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

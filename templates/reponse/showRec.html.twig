@@ -1,0 +1,54 @@
+
+    {% block css %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    {% endblock %}
+    
+    {% block reclamations %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Sujet</th>
+                    <th>Date de soumission</th>
+                    <th>Suivi</th>
+                    <th>Rapport</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in reclamation %}
+                    <tr>
+                        <td>{{ rec.sujet }}</td>
+                        <td>{{ rec.date ? rec.date|date('Y-m-d') : '' }}</td>
+                        {% if rec.etat == "En Attente" %}
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 10%" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                        {% elseif rec.etat == "En Cours" %}
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                        {% elseif rec.etat == "Resolu" %}
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </td>
+                        {% endif %}
+                         <td><a href="{{ path('rapport', {'reclamationId': rec.id}) }}"><i class="fas fa-file-alt"></i></a></td>
+                        
+                        <td>
+                            <a href="{{ path('app_reclamation_delete', {'id': rec.id}) }}"><i class="fas fa-trash-alt"></i></a>
+                            <a href="{{ path('app_reclamation_edit', {'id': rec.id}) }}"><i class="fas fa-edit"></i></a>
+                            <a href="{{ path('newRep', {'reclamationId': rec.id}) }}"><i class="far fa-envelope"></i></a>
+                        </td>
+                    </tr>
+                   
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endblock %}
+

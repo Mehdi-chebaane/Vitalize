@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use App\Entity\Users;
 
 #[ORM\Entity(repositoryClass: MealRepository::class)]
 class Meal
@@ -46,18 +46,25 @@ class Meal
     #[ORM\Column(length: 255)]
     private ?string $dureePreparation = null;
 
+ 
+
 #[Assert\NotBlank(message:'the price is required')] 
     #[ORM\Column(type: 'float')]
     private ?float $prix = null;
 
-    #[ORM\ManyToMany(targetEntity: Commande::class, mappedBy: 'meals')]
+
+    #[ORM\ManyToMany(targetEntity: Commande::class, inversedBy: 'meals')]
     private Collection $commande;
 
-   
+    #[ORM\Column]
+    private ?int $quantity = null;
+
+  
 
     public function __construct()
     {
         $this->commande = new ArrayCollection();
+       
     }
 
     public function getId(): ?int
@@ -185,5 +192,16 @@ class Meal
         return $this;
     }
 
+    public function getQuantity(): ?int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): static
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
     
 }

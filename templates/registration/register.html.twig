@@ -50,11 +50,17 @@
                          <div class="">
                             {{ form_row(registrationForm.numCnam) }}
                          </div>
+                         <div class="Numero Cnam(Patient)">
+                            {{ form_row(registrationForm.verif, {
+                                label: 'VerificationDeMedecin(Expl:Diplome medecin)'
+                            }) }}
+                         </div>
                          <div class="">
                             {{ form_row(registrationForm.password, {
                                 label: ''
                             }) }}
                          </div>
+                         
                          <div class="">
                             {{ form_row(registrationForm.consent) }}
                          </div>

@@ -19,6 +19,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType; 
 use App\Form\EditProfilAdminType; 
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use App\Service\NotificationService;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
 
 
 
@@ -28,19 +32,88 @@ class AdminController extends AbstractController
 {
 
     private $entityManager;
+ 
+
 
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+       
     }
-
 
 
     #[Route('/dashbord', name: 'dashbord')]
-    public function admin(): Response
-    {
-        return $this->render('admin/dashbord.html.twig');
+public function admin(): Response
+{
+    
+    $unverifiedUsers = $this->entityManager->getRepository(Users::class)
+    ->createQueryBuilder('u')
+    ->where('u.verif IS NOT NULL')
+    ->getQuery()
+    ->getResult();
+
+$countUnverifiedUsers = count($unverifiedUsers);
+
+    return $this->render('admin/dashbord.html.twig', ['unverifiedUsers' => $unverifiedUsers, 'countUnverifiedUsers' => $countUnverifiedUsers]);
+}
+
+
+
+
+
+#[Route('/update-user-status/{email}/{action}', name:'update_user_status', methods: ['POST'])]
+public function updateUserStatus(
+    Request $request,
+    string $email,
+    string $action,
+    EntityManagerInterface $entityManager,
+    MailerInterface $mailer
+): Response {
+    $user = $this->getDoctrine()->getRepository(Users::class)->findOneBy(['email' => $email]);
+
+    if (!$user) {
+        throw $this->createNotFoundException('User not found.');
     }
+
+    if ($action === 'accept') {
+        $user->setRoles(['ROLE_MEDECIN']);
+        $user->setVerif(null);
+
+        $this->sendAcceptanceEmail($user, $mailer);
+    } elseif ($action === 'reject') {
+        
+        $user->setVerif(null);
+        $this->sendRejectionEmail($user, $mailer);
+    }
+
+    $entityManager->flush();
+
+    return $this->redirectToRoute('admin_dashbord');
+}
+
+private function sendAcceptanceEmail(Users $user, MailerInterface $mailer): void
+{
+    $email = (new Email())
+        ->from('testp3253@gmail.com') 
+        ->to($user->getEmail())
+        ->subject('Congratulations! You are now a Medecin')
+        ->html('Congratulations! Your account has been accepted.');
+
+    $mailer->send($email);
+}
+
+private function sendRejectionEmail(Users $user, MailerInterface $mailer): void
+{
+    $email = (new Email())
+        ->from('testp3253@gmail.com') 
+        ->to($user->getEmail())
+        ->subject('Account Rejection Notification')
+        ->html('We regret to inform you that your account has been rejected.');
+
+    $mailer->send($email);
+}
+
+
 
 
     
@@ -113,7 +186,7 @@ public function new(Request $request,UserPasswordHasherInterface $userPasswordHa
 
 
     #[Route('/user/edit/{id}', name: 'modiff', methods: ['GET', 'POST'])]
-    public function edit(Request $request, $id) {
+    public function edit(Request $request, $id , MailerInterface $mailer) {
         $user = new Users();
         $user = $this->entityManager->getRepository(Users::class)->find($id);
         if (!$user) {
@@ -146,15 +219,34 @@ public function new(Request $request,UserPasswordHasherInterface $userPasswordHa
           ))->getForm();
   
         $form1->handleRequest($request);
-        if($form1->isSubmitted() && $form1->isValid()) {
+        if ($form1->isSubmitted() && $form1->isValid()) {
+           
+            if (in_array('ROLE_MEDECIN', $user->getRoles())) {
+                
+                $user->setVerif(null);
+                $this->sendMedecinAcceptanceEmail($user, $mailer);
+
+            }
+    
             $this->entityManager->persist($user);
             $this->entityManager->flush();
-          return $this->redirectToRoute('admin_liste');
+    
+            return $this->redirectToRoute('admin_liste');
         }
   
-        return $this->render('admin/modif.html.twig', ['form1' => $form1->createView(),
+        return $this->render('admin/modif.html.twig', ['user' => $user,'form1' => $form1->createView(),
     'id' => $id]);
       }
+      private function sendMedecinAcceptanceEmail(Users $user, MailerInterface $mailer): void
+{
+    $email = (new Email())
+        ->from('testp3253@gmail.com') // Replace with your email
+        ->to($user->getEmail())
+        ->subject('Congratulations! You are now a Medecin')
+        ->html('Dear ' . $user->getNom() . ',<br>Congratulations! Your role has been updated to Medecin.');
+
+    $mailer->send($email);
+}
 
 
 

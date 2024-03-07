@@ -30,6 +30,9 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: "L'adresse e-mail '{{ value }}' n'est pas valide.")]
     private ?string $email = null;
 
+    
+    #[ORM\Column(type:"string", length:255, nullable:true)]
+    private $verif;
 
     #[ORM\Column(type:"json")]
     private  $roles = [];
@@ -92,11 +95,17 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(message: "Le Telephone ne peut pas être vide.")]
     private ?string $tel = null;
 
+    #[ORM\Column(type:"string", length:255, nullable:true)]
+    private $avatar;
+
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $numCnam = null;
 
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $Adresse = null;
+
+    #[ORM\Column(length: 255,nullable: true)]
+    private ?string $resetToken = null;
 
     #[ORM\OneToMany(targetEntity: Publication::class, mappedBy: 'id_user')]
     private Collection $publications;
@@ -107,11 +116,15 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: React::class, mappedBy: 'id_user')]
     private Collection $reacts;
 
+    #[ORM\OneToMany(mappedBy: 'id_user', targetEntity: PublicationView::class)]
+    private Collection $publicationViews;
+
     public function __construct()
     {
         $this->publications = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
         $this->reacts = new ArrayCollection();
+        $this->publicationViews = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -217,6 +230,7 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
         
         return $this->email; 
     }
+    
     public function isStatus(): ?bool
     {
         return $this->status;
@@ -228,6 +242,18 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+    public function getVerif(): ?string
+    {
+        return $this->verif;
+    }
+
+    public function setVerif(?string $verif): self
+    {
+        $this->verif = $verif;
+
+        return $this;
+    }
+
 
     public function getTel(): ?string
     {
@@ -261,6 +287,29 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAdresse(?string $Adresse): static
     {
         $this->Adresse = $Adresse;
+
+        return $this;
+    }
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): self
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }
@@ -350,6 +399,36 @@ class Users implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($react->getIdUser() === $this) {
                 $react->setIdUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PublicationView>
+     */
+    public function getPublicationViews(): Collection
+    {
+        return $this->publicationViews;
+    }
+
+    public function addPublicationView(PublicationView $publicationView): static
+    {
+        if (!$this->publicationViews->contains($publicationView)) {
+            $this->publicationViews->add($publicationView);
+            $publicationView->setIdUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePublicationView(PublicationView $publicationView): static
+    {
+        if ($this->publicationViews->removeElement($publicationView)) {
+            // set the owning side to null (unless already changed)
+            if ($publicationView->getIdUser() === $this) {
+                $publicationView->setIdUser(null);
             }
         }
 

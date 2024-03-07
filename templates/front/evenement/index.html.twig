@@ -1,4 +1,4 @@
-{% extends 'front/base.html.twig' %}
+{% extends 'mehdi/publication_index.html.twig' %}
 
 {% block title %}Vitalize
 {% endblock %}
@@ -59,13 +59,13 @@
 					<div class="col-lg-4" style="margin-bottom: 20px;">
 						<div class="card">
 							<div>
-								<img src="{{ asset('uploads/' ~ evenement.imageEve) }}" style="width: 407px; height: 200px;" alt="Event Image">
+								<img src="{{ asset('uploads/' ~ evenement.imageEve) }}" style="width: 407px; height: 200px;" alt="Event Image" class="card-img-top">
 							</div>
 
 							<div class="card-body">
 								<div class="card__info">
 									<span class="card__category"></span>
-									<h3 class="card__title">
+									<h3 class="text-center">
 										{{ evenement.nom }}
 									</h3>
 									<div>
@@ -88,17 +88,28 @@
 											{{ evenement.organisateur }}
 										</span>
 									</div>
-
+<div>								<div class="text-center mt-3">
 									<span class="card__by">
-										<a href="{{ path('app_evenement_show', {'idevenement': evenement.idevenement}) }}" class="card__author" title="author">
+										<a href="{{ path('app_evenement_show', {'idevenement': evenement.idevenement}) }}" class="btn btn-primary btn-sm" style="width: 100px; display: block; margin: 0 auto;">
 											Show
 										</a>
 									</span>
-									<span class="card__by" style="margin-left: 70px;">
-										<a href="{{ path('app_evenement_edit', {'idevenement': evenement.idevenement}) }}" class="card__author" title="author">
-											Edit
-										</a>
-									</span>
+									
+									{% if app.user.nom == evenement.organisateur %}
+    									<span class="card__by">
+									
+       						
+										<a href="{{ path('app_evenement_edit', {'idevenement': evenement.idevenement}) }}" class="btn btn-primary btn-sm" style="width: 100px; display: block; margin: 0 auto;">
+           								 Edit
+        								</a>
+								
+
+    									</span>
+									
+									{% endif %}
+
+								</div>			
+								</div>									
 									<span style="position: absolute; top: 0; right: 15px; font-size: 40px;">
 										<style>
 											.reservation-container {
@@ -112,8 +123,8 @@
 												color: #fff;
 												border: none;
 												padding: 10px 15px;
-												font-size: 16px;
-												width: 200px;
+												font-size: 12px;
+												width: 150px;
 												cursor: pointer;
 												border-radius: 5px;
 

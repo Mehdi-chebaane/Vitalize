@@ -1,0 +1,56 @@
+{% extends 'front/base.html.twig' %}
+{% block title %}Hello ReclamationController!{% endblock %}
+
+{% block body %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{{parent()}} {% endblock %}
+
+
+<section id="hero" class="hero">
+
+   <img src="{{ asset('front/img/reclamation_bg.png') }}" alt="" data-aos="fade-in">
+
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-10">
+            <h2 data-aos="fade-up" data-aos-delay="100">Reclamation</h2>
+            <p data-aos="fade-up" data-aos-delay="200">"Nous nous assurerons de transmettre votre réclamation en temps voulu."</p>
+          </div>
+        </div>
+      </div>
+
+</section>{# End Hero Section #}
+
+
+<section id="contact" class="contact">
+      <div class="container section-title" data-aos="fade-up">
+        
+        <div class="container section-title" data-aos="fade-up">
+        <h2>Reclamation</h2>
+        </div>
+        <h5 data-aos="fade-up" data-aos-delay="100">Merci de fournir autant de détails que possible pour nous aider à traiter votre réclamation efficacement</h5>
+      </div>
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="row gy-4">
+
+      <div class="col-lg-6">
+      <h3 style="color:#1F51FF ;text-align:center ; font-size: 20px">Vos Reclamations</h3>
+      {% include 'reclamation/showAll.html.twig' %}
+      </div>
+
+
+      <div class="col-lg-6">
+      {{ include('reclamation/form.html.twig', {'formAction': path('new')}) }}
+      </div>
+    </div>
+    </div>
+</section>
+
+
+{% endblock %}
+
+
+

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+
 use App\Entity\Activite;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -45,4 +46,18 @@ class ActiviteRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+public function searchAndSort($search, $sort)
+{
+    $query = $this->createQueryBuilder('e');
+
+    if ($search) {
+        $query->andWhere('e.type_activite LIKE :search')->setParameter('search', '%'.$search.'%');
+    }
+
+    return $query->orderBy('e.'.$sort, 'ASC')
+        ->getQuery()
+        ->getResult();
+}
+
 }

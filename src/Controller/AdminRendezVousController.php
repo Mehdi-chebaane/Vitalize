@@ -14,11 +14,17 @@ use App\Entity\RendezVous;
 use App\Entity\Users;
 use App\Form\RendezVousType;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Security;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Service\LienMeet;
 
 class AdminRendezVousController extends AbstractController
 {
     
-    #[Route('/admin/rendezbook', name: 'Admin_rendez_index', methods: ['GET'])]
+    #[Route('/admin/rendezvouslist', name: 'Admin_rendez_index', methods: ['GET'])]
     public function rdvv(RendezVousRepository $rendezVousRepository, UsersRepository $userRepository): Response
     {
         $medecins = $userRepository->findAll();
@@ -30,7 +36,7 @@ class AdminRendezVousController extends AbstractController
     }
    
     #[Route('/admin/rendez/new/{medic_id}', name: 'Admin_rendez_new', methods: ['GET', 'POST'])]
-public function new(Request $request, EntityManagerInterface $entityManager, ?int $medic_id = null): Response
+public function new(Request $request, EntityManagerInterface $entityManager,MailerInterface $mailer,  LienMeet $lienMeet,?int $medic_id = null): Response
 {
     $rendezVou = new RendezVous();
     $form = $this->createForm(RendezVousType::class, $rendezVou);
@@ -38,15 +44,41 @@ public function new(Request $request, EntityManagerInterface $entityManager, ?in
 
     if ($form->isSubmitted() && $form->isValid()) {
         try {
+            // Set the doctor for the rendezvous based on the provided ID
             if ($medic_id) {
                 $doctor = $entityManager->getRepository(Users::class)->find($medic_id);
                 if ($doctor instanceof Users) {
                     $rendezVou->setDoctor($doctor);
                 }
             }
+            
+            // Get the appointment type from the form
+            $typeRdv = $form->get('type')->getData();
+
+            // Initialize the meet link variable
+            $meetLink = null;
+
+            if ($typeRdv === 'en_ligne') {
+                // Inclure le lien Meet dans l'e-mail
+                $meetLinks = $lienMeet->genererLiensMeet();
+                $meetLink = $meetLinks[array_rand($meetLinks)]; // Select a random meet link
+                $this->sendMeetLinkEmail($mailer, $rendezVou, $this->getUser(), $meetLink);
+            }
+
+            // Set the appointment type in the rendezvous entity
+            $rendezVou->setType($typeRdv);
+
+            // Set other properties and persist the entity
             $rendezVou->setIsAvailable(true);
             $entityManager->persist($rendezVou);
             $entityManager->flush();
+
+            // Send notification email to the patient
+            $this->sendRdvNotificationEmail($mailer, $this->getUser(), $rendezVou, $meetLink);
+
+            // Send appointment email to doctor
+            $this->sendAppointmentNotificationEmail($mailer, $doctor, $rendezVou, $meetLink);
+            
             return $this->redirectToRoute('Admin_rendez_index');
         } catch (UniqueConstraintViolationException $e) {
             // Handle the exception gracefully
@@ -54,12 +86,73 @@ public function new(Request $request, EntityManagerInterface $entityManager, ?in
             return $this->redirectToRoute('Admin_rendez_new', ['medic_id' => $medic_id]);
         }
     }
+
     return $this->render('admin_rendezvous/new.html.twig', [
         'rendez_vou' => $rendezVou,
         'form' => $form->createView(),
     ]);
 }
 
+private function sendDoctorMeetLinkEmail(MailerInterface $mailer, Users $doctor, RendezVous $rendezvous, string $meetLink): void
+{
+    $email = (new TemplatedEmail())
+        ->from("testp3253@gmail.com")
+        ->to($doctor->getEmail())
+        ->subject('Google Meet Link for Appointment')
+        ->htmlTemplate('admin_rendezvous/doctor_meet_link_email.html.twig')
+        ->context([
+            'doctor' => $doctor,
+            'rendezvous' => $rendezvous,
+            'meetLink' => $meetLink,
+        ]);
+
+    $mailer->send($email);
+}
+    private function sendRdvNotificationEmail(MailerInterface $mailer, UserInterface $currentUser, RendezVous $rendezvous, string $meetLink = null): void
+    {
+        $email = (new TemplatedEmail())
+            ->from("testp3253@gmail.com")
+            ->to($currentUser->getEmail())
+            ->subject('New Appointment Created')
+            ->htmlTemplate('admin_rendezvous/email.html.twig')
+            ->context([
+                'currentUser' => $currentUser,
+                'rendezvous' => $rendezvous,
+                
+            ]);
+
+        $mailer->send($email);
+    }
+    
+    private function sendAppointmentNotificationEmail(MailerInterface $mailer, Users $doctor, RendezVous $rendezvous,string $meetLink = null): void
+    {
+        $email = (new TemplatedEmail())
+            ->from('testp3253@gmail.com') // Update with your email
+            ->to($doctor->getEmail()) // Doctor's email
+            ->subject('New Appointment Booked')
+            ->htmlTemplate('admin_rendezvous/email2.html.twig')
+            ->context([
+                'doctor' => $doctor,
+                'rendezvous' => $rendezvous,
+            ]);
+
+        $mailer->send($email);
+    }
+   private function sendMeetLinkEmail(MailerInterface $mailer, RendezVous $rendezvous, UserInterface $currentUser, string $meetLink): void
+{
+    $email = (new TemplatedEmail())
+        ->from("testp3253@gmail.com")
+        ->to($currentUser->getEmail())
+        ->subject('Google Meet Link for Your Appointment')
+        ->htmlTemplate('admin_rendezvous/EmailMeetEnligne.html.twig')
+        ->context([
+            'currentUser' => $currentUser,
+            'rendezvous' => $rendezvous,
+            'meetLink' => $meetLink,
+        ]);
+
+    $mailer->send($email);
+}
 
 #[Route('/admin/rendez/{id}', name: 'Admin_rendez_show', methods: ['GET'])]
 public function show(RendezVous $rendezVou): Response
@@ -74,22 +167,29 @@ public function show(RendezVous $rendezVou): Response
 }
 
 
-    #[Route('/admin/rendez/{id}/edit', name: 'Admin_rendez_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, RendezVous $rendezVou, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(RendezVousType::class, $rendezVou);
-        $form->handleRequest($request);
+#[Route('/admin/rendez/{id}/edit', name: 'Admin_rendez_edit', methods: ['GET', 'POST'])]
+public function edit(Request $request, RendezVous $rendezVou, EntityManagerInterface $entityManager, ?int $medic_id = null): Response
+{
+    $form = $this->createForm(RendezVousType::class, $rendezVou);
+    $form->handleRequest($request);
 
+    try {
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
             return $this->redirectToRoute('Admin_rendez_index');
         }
-        return $this->render('admin_rendezvous/edit.html.twig', [
-            'rendez_vou' => $rendezVou,
-            'form' => $form->createView(),
-        ]);
+    } catch (UniqueConstraintViolationException $e) {
+        // Handle the exception gracefully
+        $this->addFlash('error', 'This appointment is already booked. Please choose another date/hour.');
+        return $this->redirectToRoute('Admin_rendez_new', ['medic_id' => $medic_id]);
     }
+
+    return $this->render('admin_rendezvous/edit.html.twig', [
+        'rendez_vou' => $rendezVou,
+        'form' => $form->createView(),
+    ]);
+}
 
     #[Route('/admin/rendez/{id}', name: 'Admin_rendez_delete', methods: ['POST'])]
     public function delete(Request $request, RendezVous $rendezVou, EntityManagerInterface $entityManager): Response

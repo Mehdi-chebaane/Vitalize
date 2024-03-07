@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>New Appointment Booked</title>
+</head>
+<body>
+    <h1>New Appointment Booked</h1>
+    <p>Hello Doctor {{ doctor.nom }},</p>
+    <p>A patient has booked an appointment with you.</p>
+    <p>Appointment details:</p>
+    <ul>
+        <li>Date: {{ rendezvous.date|date('Y-m-d H:i') }}</li>
+        <!-- Add more details if needed -->
+    </ul>
+    <p>Regards,</p>
+    <p>Your App Team</p>
+</body>
+</html>
