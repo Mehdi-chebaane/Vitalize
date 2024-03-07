@@ -1,0 +1,68 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Contenu</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for commentaire in commentaires %}
+        <tr>
+            <td>{{ commentaire.id }}</td>
+            <td>{{ commentaire.contenu }}</td>
+            <td>
+                <a href="{{ path('back_commentaire_show', {'id': commentaire.id}) }}">Show</a>
+                <a href="{{ path('back_commentaire_edit', {'id': commentaire.id}) }}">Edit</a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">No records found</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ path('new_commentaire_back') }}">Create new</a>
+
+<!-- Pagination links -->
+<div class="pagination">
+    <ul class="pagination justify-content-center">
+        {% if commentaires.currentPageNumber != 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ path('back_commentaire_back', {'page': commentaires.currentPageNumber - 1}) }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo; Previous</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&laquo; Previous</span>
+            </li>
+        {% endif %}
+
+        {% for page in 1..commentaires.pageCount %}
+            <li class="page-item {% if commentaires.currentPageNumber == page %}active{% endif %}">
+                <a class="page-link" href="{{ path('back_commentaire_back', {'page': page}) }}">{{ page }}</a>
+            </li>
+        {% endfor %}
+
+        {% if commentaires.currentPageNumber != commentaires.pageCount %}
+            <li class="page-item">
+                <a class="page-link" href="{{ path('back_commentaire_back', {'page': commentaires.currentPageNumber + 1}) }}" aria-label="Next">
+                    <span aria-hidden="true">Next &raquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">Next &raquo;</span>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+
+{% endblock %}

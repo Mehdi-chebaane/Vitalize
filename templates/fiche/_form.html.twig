@@ -1,0 +1,68 @@
+<!-- Form Section -->
+<section id="book-form" class="book-form">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                {{ form_start(form, {'attr':{'novalidate':'novalidate'}}) }}
+                
+                <br> <br>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="weight" class="form-label visually-hidden">Weight</label>
+                        {{ form_row(form.weight, {'attr': {'class': 'form-control', 'placeholder': 'Weight'}}) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="muscle_mass" class="form-label visually-hidden">Muscle Mass</label>
+                        {{ form_row(form.muscle_mass, {'attr': {'class': 'form-control', 'placeholder': 'Muscle Mass'}}) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="height" class="form-label visually-hidden">Height</label>
+                        {{ form_row(form.height, {'attr': {'class': 'form-control', 'placeholder': 'Height'}}) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="allergies" class="form-label visually-hidden">Allergies</label>
+                        {{ form_row(form.allergies, {'attr': {'class': 'form-control', 'placeholder': 'Allergies'}}) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="illnesses" class="form-label visually-hidden">Illnesses</label>
+                        {{ form_row(form.illnesses, {'attr': {'class': 'form-control', 'placeholder': 'Illnesses'}}) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="breakfast" class="form-label visually-hidden">Breakfast</label>
+                        {{ form_row(form.breakfast, {'attr': {'class': 'form-control', 'placeholder': 'Breakfast'}}) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="midday" class="form-label visually-hidden">Midday</label>
+                        {{ form_row(form.midday, {'attr': {'class': 'form-control', 'placeholder': 'Midday'}}) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="dinner" class="form-label visually-hidden">Dinner</label>
+                        {{ form_row(form.dinner, {'attr': {'class': 'form-control', 'placeholder': 'Dinner'}}) }}
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="snacks" class="form-label visually-hidden">Snacks</label>
+                        {{ form_row(form.snacks, {'attr': {'class': 'form-control', 'placeholder': 'Snacks'}}) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="calories" class="form-label visually-hidden">Calories</label>
+                        {{ form_row(form.calories, {'attr': {'class': 'form-control', 'placeholder': 'Calories'}}) }}
+                    </div>
+                    <div class="col-md-8 mb-3">
+                        <label for="other" class="form-label visually-hidden">Other</label>
+                        {{ form_row(form.other, {'attr': {'class': 'form-control', 'placeholder': 'Other'}}) }}
+                    </div>
+                </div>
+                
+                <a href="{{ path('app_fiche_index') }}" class="btn btn-primary" >Back To List</a>
+                <button type="submit" class="btn btn-primary" style="background-color: green;">Confirm</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit React{% endblock %}
+
+{% block body %}
+    <h1>Edit React</h1>
+
+    {{ include('react/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_react_index') }}">back to list</a>
+
+    {{ include('react/_delete_form.html.twig') }}
+{% endblock %}

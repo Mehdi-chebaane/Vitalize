@@ -1,0 +1,38 @@
+{% extends 'front/ghofrane/indexC.html.twig' %}
+
+{% block title %}Commande index{% endblock %}
+
+{% block body %}
+<br><br><br><br>
+    <h1 class="title">Liste des Commandes</h1>
+
+    <div class="row">
+        {% for commande in commandes %}
+            {% if commande.user == app.user %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Commande #{{ commande.id }}</h5>
+                            <p class="card-text">MealQuantities:{{ commande.mealQuantities ? commande.mealQuantities|json_encode : '' }}</p>
+                            <p class="card-text">MethodePaiement:{{ commande.methodePaiement }}</p>
+                            <p class="card-text">EtatCommande:{{ commande.etatCommande }}</p>
+                            <p class="card-text">Date:{{ commande.date ? commande.date|date('Y-m-d H:i:s') : '' }}</p>
+                            <p class="card-text">InstructionSpeciale:{{ commande.instructionSpeciale }}</p>
+                            <p class="card-text">PrixTotal: {{ commande.prixtotal }}</p>
+                            <a href="{{ path('app_commande_show', {'id': commande.id}) }}" class="btn btn-primary">Show</a>
+                            {% if commande.etatCommande == 'En Attente' %}
+                                <a href="{{ path('app_commande_edit', {'id': commande.id}) }}" class="btn btn-secondary">Edit</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="col">
+                <div class="alert alert-info" role="alert">
+                    No records found.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,37 @@
+<div class="containerC">
+    <div class="form-container">
+        <h1 class="form-title">new order</h1>
+        <div class="form-wrapper">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            {% for meal in commande.meals %}
+    
+                <p>{{ meal.nomRepas }}</p>
+             
+            {% endfor %}
+            {{ form_row(form.quantite, {'attr': {'class': 'form-control quantite-field'}}) }}
+            {{ form_row(form.totaleCommande, {'attr': {'readonly': 'readonly', 'class': 'form-control'}}) }}
+            {{ form_row(form.adresseClient, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.methodePaiement, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.etatCommande, {'attr': {'class': 'form-control'}}) }}
+            {{ form_row(form.date,{'attr': {'readonly': 'readonly', 'class': 'form-control'}})}}
+            {{ form_row(form.instructionSpeciale, {'attr': {'class': 'form-control'}}) }}
+            <button type="submit" class="btn-Save">{{ button_label|default('Commander') }}</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const quantiteField = document.querySelector('.quantite-field');
+    const totaleCommandeField = document.querySelector('#commande_totaleCommande');
+
+    quantiteField.addEventListener('input', function() {
+        const quantite = parseFloat(quantiteField.value);
+        const prixRepas = parseFloat('{{ meal.prix }}'); // Prix du repas récupéré depuis le contrôleur
+        const totalCommande = quantite * prixRepas;
+        totaleCommandeField.value = totalCommande.toFixed(2); // Affichage du total avec 2 décimales
+    });
+});
+</script>

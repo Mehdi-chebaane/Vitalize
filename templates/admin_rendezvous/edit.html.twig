@@ -1,0 +1,13 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+<main id="main">
+<br> <br> <br><br> <br>
+    {{ include('admin_rendezvous/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('Admin_rendez_index') }}"class="btn btn-primary";">back to list</a>
+
+    {{ include('admin_rendezvous/_delete_form.html.twig') }}
+   
+{% endblock %}

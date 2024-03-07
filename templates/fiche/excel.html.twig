@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fichepatient Excel</title>
+    <style>
+        /* Define your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fichepatient Excel</h1>
+    <table>
+        <tr>
+            {% for attribute, value in attributes %}
+                <th>{{ attribute }}</th>
+            {% endfor %}
+        </tr>
+        <tr>
+            {% for attribute, value in attributes %}
+                <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+    </table>
+</body>
+</html>

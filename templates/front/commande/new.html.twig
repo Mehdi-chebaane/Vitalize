@@ -1,0 +1,22 @@
+{% extends 'front/ghofrane/newC_base.html.twig' %}
+{% block body %}
+
+
+<div class="containerC">
+    <div class="form-container"> 
+        <h1 class="form-title">Create new Commande</h1>
+        <div class="form-wrapper">
+            {{ include('front/commande/_form.html.twig', {'attr': {'class': 'form-control'}}) }}
+
+            <div class="btn-container">
+                <a href="{{ path('app_commande_index') }}"  class="btn-back">back to list</a>
+                <form action="/checkout" method="POST">
+            
+                    <button type="submit" class="btn btn-primary btn-lg">Payer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

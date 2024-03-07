@@ -1,0 +1,19 @@
+{# search_results.html.twig #}
+
+{% extends 'admin_rendezvous/rendezvous.html.twig' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block body %}
+    <h1>Search Results</h1>
+
+    {% if medecins is empty %}
+        <p>No medecins found for the given name.</p>
+    {% else %}
+        <ul>
+            {% for medecin in medecins %}
+                <li>{{ medecin.nom }} - {{ medecin.prenom }} (ID: {{ medecin.id }})</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

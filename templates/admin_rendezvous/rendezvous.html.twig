@@ -1,0 +1,45 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+
+ <div class="d-flex flex-column" id="content-wrapper">
+ <div id="content">
+
+ <!--navbar-->
+   
+<main id="main">
+    <section id="api_users_search_by_nom" class="container">
+        <!-- Search form -->
+        <form action="{{ path('app_admin_rendez_vous') }}" method="GET" class="mb-4">
+            <div class="input-group">
+                <input class="bg-light form-control border-0 small" type="text" name="name" placeholder="Search for ...">
+                <button class="btn btn-light py-0" type="submit" style="background: rgb(208,145,53);">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+
+        <!-- Display medecins if search results exist -->
+        {% if medecins is not empty %}
+        <div class="row justify-content-center">
+            {% for medecin in medecins %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4"> <!-- Adjusted column widths -->
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ medecin.nom }}</h5>
+                        <p class="card-text">{{ medecin.prenom }}</p>
+                        <p class="card-text">{{ medecin.tel }}</p>
+                        <p class="card-text">ID: {{ medecin.id }}</p>
+                        <!-- Book button -->
+                        <form action="{{ path('Admin_rendez_new', {'medic_id': medecin.id}) }}" method="GET">
+                            <button type="submit" class="btn btn-primary">Book</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </section>
+</main>
+{% endblock body %}

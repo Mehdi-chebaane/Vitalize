@@ -1,0 +1,55 @@
+{% extends 'admin/base.html.twig' %}
+
+
+
+
+{% block body %}
+<main id="main">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Weight</th>
+                <th>Muscle_mass</th>
+                <th>Height</th>
+                <th>Allergies</th>
+                <th>Illnesses</th>
+                <th>Breakfast</th>
+                <th>Midday</th>
+                <th>Dinner</th>
+                <th>Snacks</th>
+                <th>Calories</th>
+                <th>Other</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for fichepatient in fichepatients %}
+            <tr>
+                <td>{{ fichepatient.id }}</td>
+                <td>{{ fichepatient.weight }}</td>
+                <td>{{ fichepatient.muscleMass }}</td>
+                <td>{{ fichepatient.height }}</td>
+                <td>{{ fichepatient.allergies }}</td>
+                <td>{{ fichepatient.illnesses }}</td>
+                <td>{{ fichepatient.breakfast }}</td>
+                <td>{{ fichepatient.midday }}</td>
+                <td>{{ fichepatient.dinner }}</td>
+                <td>{{ fichepatient.snacks }}</td>
+                <td>{{ fichepatient.calories }}</td>
+                <td>{{ fichepatient.other }}</td>
+                <td>
+                    <a href="{{ path('admin_app_fiche_show', {'id': fichepatient.id}) }}"class="btn btn-primary" >show</a>
+                    <a href="{{ path('admin_app_fiche_edit', {'id': fichepatient.id}) }}"class="btn btn-primary">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="13">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+<a href="{{ path('admin_app_fiche_new') }}" class="btn btn-primary" >Create new</a>
+{% endblock %}
+

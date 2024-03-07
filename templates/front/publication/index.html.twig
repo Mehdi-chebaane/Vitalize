@@ -1,0 +1,131 @@
+{% extends 'mehdi/publication_index.html.twig' %}
+
+{% block title %}Publication{% endblock %}
+
+{% block body %}
+<br><br>
+<section id="portfolio" class="portfolio">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Publications</h2>
+    </div>
+
+    <div class="container">
+        <div class="text-center mt-3">
+        <div class="mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by Titre">
+        </div>
+    </div>
+    
+        <div class="text-center mt-3">
+            <a href="{{ path('app_publication_new') }}" class="btn btn-primary">Add Your Own Post !</a><br><br>
+        </div>
+
+        <div class="container">
+            <!-- Filter Buttons -->
+            <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+                <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
+                    <li data-filter="*" class="filter-active">All</li>
+                    {% set types = [] %}
+                    {% for publication in publications %}
+                        {% if publication.type not in types %}
+                            {% set types = types|merge([publication.type]) %}
+                            <li data-filter=".filter-{{ publication.type|lower }}">{{ publication.type }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+            {% for publication in publications %}
+                <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-{{ publication.type|lower }}">
+                    <div class="card" style="height: 400px;">
+                        <img src="{{ asset(publication.image) }}" class="card-img-top" alt="Publication Image">
+                        <div class="text-center mt-3" style="height: 150px;">
+                            <h5 class="text-center">{{ publication.titre }}</h5>
+                            <p>{{ publication.description|slice(0, 70) }}{% if publication.description|length > 10 %}...{% endif %}</p>
+                            <p><i class="fas fa-eye"></i> {{ publication.views }}</p> {# Add this line to display views with eye icon #}
+                            <a href="{{ path('app_publication_show', {'id': publication.id}) }}" class="btn btn-primary btn-sm" style="width: 100px; display: block; margin: 0 auto;">Read more</a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p>No publications available</p>
+            {% endfor %}
+        </div>
+        
+
+    <!-- Section for displaying recommended publications -->
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Recommended Publications</h2>
+    </div>
+    <div class="container">
+        <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+            {% if recommendations is not empty %}
+                {% for recommendation in recommendations %}
+                    <div class="col-lg-4 col-md-6 portfolio-item isotope-item">
+                        <div class="card" style="height: 400px;">
+                            <img src="{{ asset(recommendation.image) }}" class="card-img-top" alt="Publication Image">
+                            <div class="text-center mt-3" style="height: 150px;">
+                                <h5 class="text-center">{{ recommendation.titre }}</h5>
+                                <p>{{ recommendation.description|slice(0, 70) }}{% if recommendation.description|length > 10 %}...{% endif %}</p>
+                                <a href="{{ path('app_publication_show', {'id': recommendation.id}) }}" class="btn btn-primary btn-sm" style="width: 100px; display: block; margin: 0 auto;">Read more</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No recommendations available</p>
+            {% endif %}
+    <br><br><br>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the filter buttons
+        const filterButtons = document.querySelectorAll('.portfolio-filters li');
+      
+        // Get the publication items
+        const publicationItems = document.querySelectorAll('.portfolio-item');
+      
+        // Add click event listeners to the filter buttons
+        filterButtons.forEach(function(button) {
+          button.addEventListener('click', function() {
+            const filterValue = button.getAttribute('data-filter');
+      
+            // Remove the 'filter-active' class from all buttons
+            filterButtons.forEach(function(btn) {
+              btn.classList.remove('filter-active');
+            });
+      
+            // Add the 'filter-active' class to the clicked button
+            button.classList.add('filter-active');
+      
+            // Show or hide publication items based on the selected filter
+            publicationItems.forEach(function(item) {
+              if (filterValue === '*' || filterValue === '.filter-all' || item.classList.contains(filterValue.slice(1))) {
+                item.style.display = 'block';
+              } else {
+                item.style.display = 'none';
+              }
+            });
+          });
+        });
+
+        // Add event listener for search input
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.trim().toLowerCase();
+            publicationItems.forEach(function(item) {
+                const titre = item.querySelector('h5').textContent.trim().toLowerCase();
+                if (titre.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

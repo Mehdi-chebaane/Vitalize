@@ -1,0 +1,87 @@
+<!doctype html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <title>Inscription</title>
+            <link rel="shortcut icon" href="{{asset("back/images/fav.png")}}" type="image/x-icon">
+             
+            <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+            <link rel="shortcut icon" href="{{asset("login/images/fav.jpg")}}">
+            <link rel="stylesheet"    href="{{asset("login/css/bootstrap.min.css")}}">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+            <link rel="stylesheet" type="text/css"   href="{{asset("login/css/style.css")}}" />
+          
+        </head>
+    <body class="bg-white">
+        <div class="container-fluid vh-100 overflow-auto">
+            <div class="row vh-100 ">
+                <div class="col-lg-6 bg-gray p-5 text-center">
+                   <h4 class="text-center fw-bolder fs-2">Se connecter</h4>
+                   <p class="mb-3 fs-7">Vous avez déjà créé un compte ?</p>
+                <a class="btn fw-bold mb-5 btn-secondary px-4 rounded-pill" href="{{ path('app_login') }}">Connexion</a>
+
+                  
+                   <div class="img-cover p-4">
+                        <img src="login/images/dddd.jpg" alt="">
+                   </div>
+                </div>
+                <div class="col-lg-6 p  vh-100">
+                   <div class="row d-flex vh-100">
+                       <div class="col-md-8 p-4 ikigui m-auto text align-items-center">
+                        {{ form_start(registrationForm,{'attr': {'novalidate': 'novalidate'}}) }}
+                           <h4 class="text-center fw-bolder mb-4 fs-2">Inscription</h4>
+                            <div class="">
+
+                                {{ form_row(registrationForm.nom) }}
+                           </div>
+                           <div class="">
+                            {{ form_row(registrationForm.prenom) }}
+                           </div>
+                           <div class="">
+                            {{ form_row(registrationForm.email) }}
+                           </div>
+                             <div class="">
+                                {{ form_row(registrationForm.adresse) }}
+                           </div>
+                           <div class="">
+                            {{ form_row(registrationForm.tel) }}
+                         </div>
+                         <div class="">
+                            {{ form_row(registrationForm.numCnam) }}
+                         </div>
+                         <div class="">
+                            {{ form_row(registrationForm.password, {
+                                label: ''
+                            }) }}
+                         </div>
+                         <div class="">
+                            {{ form_row(registrationForm.consent) }}
+                         </div>
+                       
+
+                           
+                           <button class="btn btn-lg fw-bold fs-7 btn-secondary  w-100" type="submit" >S'inscrire</button><br><br>
+                           
+                           <a class="already" style="text-decoration: underline;" href="{{ path('app_login') }}">Avez vous déjà un compte? Connectez-vous ici.</a>
+                        
+                        {{ form_end(registrationForm) }}
+                        
+                         {{ form_errors(registrationForm) }}  
+                         <br><br>
+                          
+                       </div>
+                   </div>
+                    
+                </div>
+            </div>
+        </div>  
+    </body>
+    <script  src="{{asset("login/js/jquery-3.2.1.min.js")}}"></script>
+    <script src="{{asset("login/js/popper.min.js")}}"></script>
+    <script  src="{{asset("login/js/bootstrap.bundle.min.js")}}"></script>
+    <script src="{{asset("login/plugins/scroll-fixed/jquery-scrolltofixed-min.js")}}"></script>
+    <script  src="{{asset("login/plugins/testimonial/js/owl.carousel.min.js")}}"></script>
+    <script    src="{{asset("login/js/script.js")}}"></script>
+
+</html>

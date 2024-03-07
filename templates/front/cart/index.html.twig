@@ -1,0 +1,9 @@
+
+
+{% block title %}Hello CartController!{% endblock %}
+
+{% block body %}
+{% for meal in cart %}
+<h3>{{meal.nomRepas}}</h3>
+{% endfor %}
+{% endblock %}

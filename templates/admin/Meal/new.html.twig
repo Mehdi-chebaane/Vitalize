@@ -1,0 +1,13 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block body %}
+ 
+
+    <h1>Create new Meal</h1>
+
+    {{ include('admin/meal/_form.html.twig') }}
+
+
+    <a href="{{ path('app_meal_index') }}">back to list</a>
+    
+{% endblock %}

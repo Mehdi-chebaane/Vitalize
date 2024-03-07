@@ -1,0 +1,90 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <h3 class="text-dark mb-4">Table :</h3>
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <p class="text-primary m-0 fw-bold">Liste des utilisateurs :</p>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive table mt-2" role="grid" aria-describedby="dataTable_info">
+                {% if users %}
+                    <table class="table my-0" id="example">
+    <thead>
+        <tr>
+            <th>#ID</th>
+            <th>Nom</th>
+            <th>Prenom</th>
+           
+            <th>Role</th>
+           
+            
+            <th>Status</th>
+          
+            
+            
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                 <td>{{ user.nom }}</td>
+                <td>{{ user.prenom }}</td>
+                 
+         <td>
+   {% for role in user.roles %}
+                 {% if role=="ROLE_PATIENT" %}
+                      Patient
+                 {% elseif role=="ROLE_MEDECIN" %}
+                      Medecin
+                {% elseif role=="ROLE_ADMIN" %}
+                      Administrateur
+                 {% endif %}
+                {% endfor %}
+</td>
+
+              
+               
+                <td>{{ user.status }}</td>
+               
+               
+                
+                <td>
+                    <a class="btn btn-info btn-sm" role="button" style="margin-right: 7px;" href="{{ path('admin_show', {'id': user.id }) }}" >Prev</a>
+                    <a class="btn btn-warning btn-sm" role="button" style="margin-right: 7px;" href="{{ path('admin_modiff', {'id': user.id }) }}">Edit</a>
+                    
+      <a class="del-row"  novalidate:"novalidate" href="{{ path('admin_delete', {'id': user.id }) }}"><i class="fas fa-trash" style="font-size: 20px;color: rgb(255,0,0);margin-top: 3px;"></i></a>        
+       
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+
+  
+    <tfoot>
+        <tr>
+            <td><strong>ID</strong></td>
+            <td><strong>Nom</strong></td>
+            <td><strong>Prenom</strong></td>
+            <td><strong>Roles</strong></td>
+            <td><strong>Status</strong></td>
+            
+          
+            
+            <td><strong>Actions</strong></td>
+        </tr>
+    </tfoot>
+</table>
+                {% else %}
+                    <p>AUCUN</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

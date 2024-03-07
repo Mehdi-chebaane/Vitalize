@@ -1,0 +1,89 @@
+
+{% extends 'admin/base.html.twig' %}
+{% block title %}Liste des Repas{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Liste des Repas</h1>
+        <a href="{{ path('app_meal_new') }}" class="btn btn-Save">Ajouter un repas</a>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>NomRepas</th>
+                        <th>Ingredients</th>
+                        <th>Recette</th>
+                        <th>TypeRepas</th>
+                        <th>Image</th>
+                        <th>NombrePersonnes</th>
+                        <th>DureePreparation</th>
+                        <th>Prix</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for meal in meals %}
+                        <tr>
+                            <td>{{ meal.id }}</td>
+                            <td>{{ meal.nomRepas }}</td>
+                            <td>{{ meal.ingredients|slice(0, 30)}}...</td>
+                            <td>{{ meal.recette|slice(0, 50)}}...</td>
+                            <td>{{ meal.typeRepas }}</td>
+                            <td><img src="{{ asset(meal.image) }}" class="img-fluid" alt="{{ meal.nomRepas }}"></td>
+                            <td>{{ meal.nombrePersonnes }}</td>
+                            <td>{{ meal.dureePreparation }}</td>
+                            <td>{{ meal.prix }}</td>
+                            <td>
+                                <div class="d-flex">
+                                    <a href="{{ path('app_meal_show', {'id': meal.id}) }}" class="btn btn-info me-2">Voir</a>
+                                    <a href="{{ path('app_meal_edit', {'id': meal.id}) }}" class="btn btn-success">Modifier</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="10">Aucun enregistrement trouvé</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <ul class="pagination justify-content-center">
+                    {% if meals.currentPageNumber != 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_commande_indexA', {'page': meals.currentPageNumber - 1}) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo; Previous</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link" aria-hidden="true">&laquo; Previous</span>
+                        </li>
+                    {% endif %}
+            
+                    {% for page in 1..meals.pageCount %}
+                        <li class="page-item {% if meals.currentPageNumber == page %}active{% endif %}">
+                            <a class="page-link" href="{{ path('app_commande_indexA', {'page': page}) }}">{{ page }}</a>
+                        </li>
+                    {% endfor %}
+            
+                    {% if meals.currentPageNumber != meals.pageCount %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_commande_indexA', {'page': meals.currentPageNumber + 1}) }}" aria-label="Next">
+                                <span aria-hidden="true">Next &raquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link" aria-hidden="true">Next &raquo;</span>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New React{% endblock %}
+
+{% block body %}
+    <h1>Create new React</h1>
+
+    {{ include('react/_form.html.twig') }}
+
+    <a href="{{ path('app_react_index') }}">back to list</a>
+{% endblock %}

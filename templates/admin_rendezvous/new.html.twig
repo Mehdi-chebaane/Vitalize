@@ -1,0 +1,13 @@
+{% extends 'admin/base.html.twig' %}
+
+
+{% block body %}
+
+   <center><h2>Book Your Appointment</h2></center>
+    {{ include('admin_rendezvous/_form.html.twig') }}
+{% for flashMessage in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+{% endblock %}
