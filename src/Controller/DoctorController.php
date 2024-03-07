@@ -14,7 +14,8 @@ use App\Form\RendezVousType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DoctorController extends AbstractController
-{
+{      
+    #[IsGranted("ROLE_MEDECIN")]
     #[Route('/doctorliste', name: 'doctor_liste_index')]
     public function index(RendezVousRepository $rendezVousRepository, UsersRepository $userRepository): Response
     {

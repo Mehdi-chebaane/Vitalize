@@ -75,7 +75,7 @@ class CommentaireController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_commentaire_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_publication_index', [], Response::HTTP_SEE_OTHER);
         }
 
         // Pass the form view to the template

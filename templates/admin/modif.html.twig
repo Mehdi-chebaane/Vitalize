@@ -50,7 +50,16 @@
                         {{ form_row(form1.tel, {'attr': {'class': 'form-control', 'id': 'from-email', 'required': 'required'}}) }}
                     </div>
                 </div>
-        
+        <div class="form-group mb-3">
+  {% if user.verif is not null and 'ROLE_MEDECIN' not in user.roles %}
+    <p>Verification Medecin:</p>
+    <a href="{{ asset(user.verif) }}" data-fancybox="gallery" data-caption="{{ user.email }}">
+        <img src="{{ asset(user.verif) }}" class="verification-image" style="width: 200px; height: 100px;" class="card-img-top">
+    </a>
+{% else %}
+    <p></p>
+{% endif %}
+</div>
                 
                 <div class="form-group mb-3">
                     <span class="required-input">*</span>

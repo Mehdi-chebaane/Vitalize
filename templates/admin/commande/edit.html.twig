@@ -1,0 +1,33 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Vitalize{% endblock %}
+
+{% block body %}
+
+    {{ include('admin/commande/_form.html.twig', {'button_label': 'Update'}) }}
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const quantiteField = document.querySelector('.quantite-field');
+        const totaleCommandeField = document.querySelector('#commande_totaleCommande');
+
+        quantiteField.addEventListener('input', function() {
+            const quantite = parseFloat(quantiteField.value);
+            let totalCommande = 0;
+
+            // Calculer le total de la commande en parcourant les repas associés
+            {% for meal in meals %}
+                totalCommande += parseFloat('{{ meal.prix }}');
+            {% endfor %}
+
+            totaleCommandeField.value = (quantite * totalCommande).toFixed(2); // Affichage du total avec 2 décimales
+        });
+    });
+</script>
+</div>
+
+{% endblock %}
+

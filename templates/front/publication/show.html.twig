@@ -38,9 +38,11 @@
             </div>
             <br><br>
             <div class="text-center mt-3">
-                {{ include('front/publication/_delete_form.html.twig', { 'publication': publication }) }}
-                
-                </div>
+                {% if app.user and publication.idUser.id == app.user.id %}
+                    {{ include('front/publication/_delete_form.html.twig', { 'publication': publication }) }}
+                {% endif %}
+            </div>
+            
             </div>
         </div>
     </div>
@@ -192,28 +194,51 @@
                                                         <h5 class="h5 g-color-gray-dark-v1 mb-0" style="font-size: 14px;"><span class="text-primary">{{ commentaire.idUser.nom }}</span>: {{ commentaire.contenu }}</h5>
                                                         <ul class="list-inline d-sm-flex my-0">
                                                             <li class="list-inline-item ml-auto">
-                                                                <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover reply-link" href="{{ path('reply_to_comment', {'parentId': commentaire.id}) }}" style="font-size: 12px;">
-                                                                    <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
-                                                                    Reply
-                                                                </a>
+                                                                {% if app.user and commentaire.idUser.id == app.user.id %}
+                                                                    <div class="btn-group" role="group" aria-label="Comment Actions">
+                                                                        <a href="{{ path('app_commentaire_edit', {'id': commentaire.id}) }}" class="btn btn-primary comment-action-btn modify-btn">Modify</a>
+                                                                        <form action="{{ path('app_commentaire_delete', {'id': commentaire.id}) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this comment?')" class="delete-form">
+                                                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
+                                                                            <button type="submit" class="btn btn-danger comment-action-btn delete-btn">Delete</button>
+                                                                        </form>
+                                                                    </div>
+                                                                {% endif %}
                                                             </li>
                                                         </ul>
+                                                        <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover reply-link" href="{{ path('reply_to_comment', {'parentId': commentaire.id}) }}" style="font-size: 12px;">
+                                                            <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
+                                                            Reply
+                                                        </a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <!-- Loop through replies -->
-                                            {% for reply in publication.commentaires %}
-                                                {% if reply.parentComment == commentaire %}
-                                                    <div class="media g-mb-30 media-comment" style="margin-left: 50px;">
-                                                        <div class="d-flex align-items-start">
-                                                            <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="{{ reply.idUser.avatar }}" alt="Image Description" style="margin-right: 10px;">
-                                                            <div class="media-body u-shadow-v18 g-pa-30 custom-background">
-                                                                <h5 class="h5 g-color-gray-dark-v1 mb-0" style="font-size: 14px;"><span class="text-primary">{{ reply.idUser.nom }}</span>: {{ reply.contenu }}</h5>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
+                                            <!-- Loop through replies -->
+{% for reply in publication.commentaires %}
+    {% if reply.parentComment == commentaire %}
+        <div class="media g-mb-30 media-comment" style="margin-left: 50px;">
+            <div class="d-flex align-items-start">
+                <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="{{ reply.idUser.avatar }}" alt="Image Description" style="margin-right: 10px;">
+                <div class="media-body u-shadow-v18 g-pa-30 custom-background">
+                    <h5 class="h5 g-color-gray-dark-v1 mb-0" style="font-size: 14px;"><span class="text-primary">{{ reply.idUser.nom }}</span>: {{ reply.contenu }}</h5>
+                    <!-- Buttons for modifying or deleting replies -->
+                    <div class="buttons">
+                        {% if app.user and reply.idUser.id == app.user.id %}
+                            <div class="btn-group" role="group" aria-label="Comment Actions">
+                                <a href="{{ path('app_commentaire_edit', {'id': reply.id}) }}" class="btn btn-primary comment-action-btn modify-btn">Modify</a>
+                                <form action="{{ path('app_commentaire_delete', {'id': reply.id}) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this reply?')" class="delete-form">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reply.id) }}">
+                                    <button type="submit" class="btn btn-danger comment-action-btn delete-btn">Delete</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+
                                         {% endif %}
                                     {% endfor %}
                                 </div>
@@ -229,10 +254,14 @@
             
             
             
+            
 
             <div class="text-center mt-3">
                 <a href="{{ path('app_publication_index') }}" class="btn btn-primary">Back to List</a>
-                <a href="{{ path('app_publication_edit', {'id': publication.id}) }}" class="btn btn-secondary">Edit</a>
+                {% if app.user and publication.idUser.id == app.user.id %}
+                        <!-- Display the "Edit" button -->
+                        <a href="{{ path('app_publication_edit', {'id': publication.id}) }}" class="btn btn-secondary">Edit</a>
+                    {% endif %}
             </div>
 
             <div id="commentFormSection">

@@ -15,7 +15,7 @@ class Evenement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private $idevenement;
+    private ?int $idevenement;
 
     
     
@@ -32,10 +32,7 @@ class Evenement
     private $date;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotNull(message: "Localisation ne peut pas être nulle.")]
-
-    #[Assert\Length(min: 3, minMessage: "la localisation doit comporter plus de 3 caractères.")]
-    private $localisation;
+     private $localisation;
 
     #[ORM\Column]
     #[Assert\NotNull(message: "Capacité ne peut pas être nulle.")]

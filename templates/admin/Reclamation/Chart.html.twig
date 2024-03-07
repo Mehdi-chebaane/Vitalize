@@ -1,0 +1,72 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Consulter les statistiques à propos de la réclamation!{% endblock %}
+
+{% block body %}
+<br>
+<br>
+<br>
+<br>
+<div class="container section-title" data-aos="fade-up">
+    <h2>Statistiques à propos de mes Réclamations</h2>
+</div>
+
+<canvas id="pieChart" style="width:100%;max-width:600px"></canvas>
+<canvas id="barChart" style="width:100%;max-width:600px"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script>
+    var xValuesPie = ["Plainte", "Suggestion", "Demande d'information"];
+    var yValuesPie = [{{ complaintPercentage }}, {{ suggestionPercentage }}, {{ informationRequestPercentage }}];
+    var barColorsPie = ["#b91d47", "#00aba9", "#2b5797"];
+
+    new Chart("pieChart", {
+        type: "pie",
+        data: {
+            labels: xValuesPie,
+            datasets: [{
+                backgroundColor: barColorsPie,
+                data: yValuesPie
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: "Partition des réclamations selon leur type (Pourcentage %)"
+            }
+        }
+    });
+   
+    var xValuesBar = ["Résolu", "En attente", "En Cours"];
+    var yValuesBar = [{{ reclamationsResolues }}, {{ reclamationsEnAttente }}, {{ reclamationsEnCours }}];
+    var barColorsBar = ["#00aba9", "#b91d47", "#2b5797"];
+
+    new Chart("barChart", {
+        type: "bar",
+        data: {
+            labels: xValuesBar,
+            datasets: [{
+                backgroundColor: barColorsBar,
+                data: yValuesBar
+            }]
+        },
+        options: {
+            title: {
+                display: true,
+                text: "Statut des Réclamations"
+            },
+            legend: {
+                display: true,
+                position: 'bottom', // Adjust the position as needed
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        precision: 0
+                    }
+                }]
+            }
+        }
+    });
+</script>
+{% endblock %}

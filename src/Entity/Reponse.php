@@ -24,16 +24,10 @@ class Reponse
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $patient = null;
 
-<<<<<<< HEAD
-    #[ORM\ManyToOne(targetEntity:"App\Entity\Reclamation")]
-    #[ORM\JoinColumn(name: "reclamation_id", referencedColumnName: "id")]
-    private $reclamation;
-=======
-    #[ORM\ManyToOne(targetEntity:"App\Entity\Reclamation", inversedBy:"reponses")]
+    #[ORM\ManyToOne(targetEntity: "App\Entity\Reclamation", inversedBy: "reponses", cascade: ["remove"])]
     #[ORM\JoinColumn(nullable: false)]
-    private $reclamation;
+    private ?Reclamation $reclamation = null;
 
->>>>>>> Gestion_Reclamation
     
     public function getId(): ?int
     {
@@ -87,18 +81,11 @@ class Reponse
         return $this->reclamation;
     }
 
-<<<<<<< HEAD
-    public function setReclamation(?Reclamation $reclamation): self
-=======
     public function setReclamation(?Reclamation $reclamation): static
->>>>>>> Gestion_Reclamation
     {
         $this->reclamation = $reclamation;
 
         return $this;
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> Gestion_Reclamation
 }

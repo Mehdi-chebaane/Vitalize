@@ -24,7 +24,7 @@ class Publication
     #[Assert\NotBlank(message: "Titre Cannot be empty")]
     private ?string $titre = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 5000)]
     #[Assert\NotBlank(message: "Description cannot be empty")]
     private ?string $description = null;
 
@@ -33,7 +33,6 @@ class Publication
     private ?string $image = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message: "Video Cannot be empty")]
     private ?string $video = null;
 
     #[ORM\ManyToOne(inversedBy: 'publications')]
@@ -46,10 +45,29 @@ class Publication
     #[ORM\OneToMany(targetEntity: React::class, mappedBy: 'id_pub')]
     private Collection $reacts;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $views = null;
+
+    #[ORM\OneToMany(mappedBy: 'id_pub', targetEntity: PublicationView::class)]
+    private Collection $publicationViews;
+
     public function __construct()
     {
         $this->commentaires = new ArrayCollection();
         $this->reacts = new ArrayCollection();
+        $this->publicationViews = new ArrayCollection();
+    }
+
+    public function getViews(): ?int
+    {
+        return $this->views;
+    }
+
+    public function setViews(?int $views): static
+    {
+        $this->views = $views;
+
+        return $this;
     }
 
     public function getId(): ?int
@@ -183,6 +201,36 @@ class Publication
             // set the owning side to null (unless already changed)
             if ($react->getIdPub() === $this) {
                 $react->setIdPub(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PublicationView>
+     */
+    public function getPublicationViews(): Collection
+    {
+        return $this->publicationViews;
+    }
+
+    public function addPublicationView(PublicationView $publicationView): static
+    {
+        if (!$this->publicationViews->contains($publicationView)) {
+            $this->publicationViews->add($publicationView);
+            $publicationView->setIdPub($this);
+        }
+
+        return $this;
+    }
+
+    public function removePublicationView(PublicationView $publicationView): static
+    {
+        if ($this->publicationViews->removeElement($publicationView)) {
+            // set the owning side to null (unless already changed)
+            if ($publicationView->getIdPub() === $this) {
+                $publicationView->setIdPub(null);
             }
         }
 

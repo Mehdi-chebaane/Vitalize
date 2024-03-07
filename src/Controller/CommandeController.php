@@ -166,7 +166,7 @@ public function indexA(CommandeRepository $commandeRepository, PaginatorInterfac
     #[Route('admin/{id}', name: 'app_commande_showA', methods: ['GET'])]
     public function showA(Commande $commande): Response
     {
-        return $this->render('admin/commande/showA.html.twig', [
+        return $this->render('admin/commande/show.html.twig', [
             'commande' => $commande,
         ]);
     }
@@ -214,7 +214,7 @@ public function editA(Request $request, Commande $commande, EntityManagerInterfa
     if ($form->isSubmitted() && $form->isValid()) {
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_commande_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_commande_indexA', [], Response::HTTP_SEE_OTHER);
     }
 
     return $this->renderForm('admin/commande/editA.html.twig', [

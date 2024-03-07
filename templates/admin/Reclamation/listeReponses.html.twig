@@ -1,0 +1,52 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Les Réponses{% endblock %}
+
+{% block body %}
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="container section-title" data-aos="fade-up">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Consulter les réponses de chaque réclamation</h2>
+    </div>
+</div>
+
+<div class="col-lg-6 mx-auto row justify-content-center">
+    <div class="col-lg-6 margin-bottom" style="margin-bottom: 20px;">
+        <a href="{{ path('admin_reclamation_index') }}" class="btn btn-primary">Revenir aux Réclamations</a>
+    </div> 
+
+   <table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Titre Reclamation</th>
+            <th>Réponse</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for rec in reclamations %}
+            {% set relatedReponses = rec.getReponses() %}
+            {% for key, reponse in relatedReponses %}
+                <tr>
+                    {% if loop.first %}
+                        <td rowspan="{{ relatedReponses|length }}">{{ rec.Sujet }}</td>
+                    {% endif %}
+                    <td>{{ reponse.message }}</td>
+                    <td>
+                        <a href="{{ path('app_response_delete', {'id': reponse.id}) }}"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+{% endblock %}

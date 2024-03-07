@@ -1,48 +1,84 @@
-{# Render the form #}
+{# templates/rendez_vous/new.html.twig #}
+
 {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'custom-form'}}) }}
     <div class="form-group">
         {{ form_label(form.date, 'Meeting Date and Time', {'label_attr': {'class': 'control-label'}}) }}
         {{ form_widget(form.date, {'attr': {'class': 'form-control datetime-input'}}) }}
+        {# Display validation errors for the date field #}
+        {% if form_errors(form.date) %}
+            <span class="form-text text-muted">{{ form_errors(form.date)|first }}</span>
+        {% endif %}
         <small class="form-text text-muted">Meeting time must be within business hours (8:00 AM - 6:00 PM) and ONLY every 30 minutes Sharp.</small>
     </div>
-    {% for flashMessage in app.flashes('error') %}
-        <div class="alert alert-danger" role="alert">
-            {{ flashMessage }}
-        </div>
-    {% endfor %}
+    <div class="form-group">
+        {{ form_label(form.type, 'Appointment Type', {'label_attr': {'class': 'control-label'}}) }}
+        {% for choice in form.type %}
+            <div class="form-check">
+                {{ form_widget(choice, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(choice, null, {'label_attr': {'class': 'form-check-label'}}) }}
+            </div>
+        {% endfor %}
+        {# Display validation errors for the type field #}
+        {% if form_errors(form.type) %}
+        {% endif %}
+    </div>
     <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
-
-
-{# Render the "Book" button as a button #}
-
-<!-- Add the CSS styles here -->
 <style>
-/* Custom form styles */
-.custom-form {
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-/* Date and time input styles */
-.datetime-input {
-    width: 100%;
-}
-
-/* Additional form feedback styles */
-.form-group {
-    margin-bottom: 20px;
-}
-
-.control-label {
-    font-weight: bold;
-}
-
-/* Error message styles */
-.form-text.text-muted {
-    color: #dc3545; /* Red color for error messages */
-    font-size: 0.9em;
-    display: block;
-    margin-top: 5px;
-}
-</style>
+    /* Custom form styles */
+    .custom-form {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 80px;
+        border-radius: 10px;
+        background-color: #f8f9fa; /* Light gray background */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    }
+    
+    /* Date and time input styles */
+    .datetime-input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ced4da; /* Light gray border */
+        border-radius: 5px;
+    }
+    
+    /* Radio button styles */
+    .form-check-input {
+        margin-right: 8px;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #007bff; /* Medical-oriented blue color */
+        border-radius: 50%;
+    }
+    
+    .form-check-label {
+        font-weight: 500;
+        color: #212529; /* Dark color for labels */
+    }
+    
+    /* Primary button styles */
+    .btn-primary {
+        background-color: #007bff; /* Medical-oriented blue color */
+        border: none;
+        border-radius: 5px;
+        padding: 12px 20px;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    .btn-primary:hover {
+        background-color: #0056b3; /* Darker shade of blue on hover */
+    }
+    
+    /* Error message styles */
+    .form-text.text-muted {
+        color: #dc3545; /* Red color for error messages */
+        font-size: 0.9em;
+        display: block;
+        margin-top: 5px;
+    }
+    </style>
+    

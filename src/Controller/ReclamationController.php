@@ -1,64 +1,94 @@
 <?php
 namespace App\Controller;
 use Dompdf\Dompdf; 
+use App\Entity\Users;
 use App\Entity\Reclamation;
 use App\Form\ReclamationType;
-use App\Repository\ReclamationRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\ReclamationRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 class ReclamationController extends AbstractController
 {   #[Route('/reclamation', name: 'reclamation')]
-    public function index(Request $request,ReclamationRepository $reclamationRepository): Response
+    public function index(Request $request,ReclamationRepository $reclamationRepository,EntityManagerInterface $entityManager): Response
     {   $reclamation = new Reclamation();
+        $currentUser = $this->getUser();
+        if (!$currentUser) {
+            throw $this->createAccessDeniedException('User not authenticated');
+        }
+        $reclamations = $reclamationRepository->findBy(['user' => $currentUser]);
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);
+
         return $this->render('reclamation/index.html.twig', [
             'controller_name' => 'ReclamationController',
             'form' => $form->createView(),
-            'reclamation' => $reclamationRepository->findAll(),
+            'reclamation' => $reclamations
+            
         ]);
        
     }
     #[Route('/rapport/{reclamationId}', name: 'rapport')]
-    public function generatePdfAction($reclamationId)
+public function generatePdfAction($reclamationId)
+{
+    // Fetch Reclamation entity
+    $entityManager = $this->getDoctrine()->getManager();
+    $reclamation = $entityManager->getRepository(Reclamation::class)->find($reclamationId);
+    $recImage = $entityManager->getRepository(Reclamation::class)->find($reclamationId)->getFile();
+    if (!$reclamation) {
+        throw $this->createNotFoundException('Reclamation not found');
+    }
+    $medecinId = $reclamation->getMedecin();
+    $medecinUser = $this->getDoctrine()->getRepository(Users::class)->find($medecinId);
+    $medecinName = $medecinUser->getNom();
+
+    // Function to convert image to data URL
+    function imageToDataUrl(string $filename): string
     {
-        // Get EntityManager
-        $entityManager = $this->getDoctrine()->getManager();
-
-        // Fetch Reclamation entity
-        $reclamation = $entityManager->getRepository(Reclamation::class)->find($reclamationId);
-
-        if (!$reclamation) {
-            throw $this->createNotFoundException('Reclamation not found');
+        if (!file_exists($filename)) {
+            throw new Exception('File not found.');
         }
 
-        // Render PDF using template
-        $html = $this->renderView('reclamation/rapport.html.twig', [
-            'reclamation' => $reclamation,
-        ]);
-        
-        // Generate PDF
-        
+        $mime = mime_content_type($filename);
+        if ($mime === false) {
+            throw new Exception('Illegal MIME type.');
+        }
 
-        $dompdf = new Dompdf();
-        $dompdf->set_option('isRemoteEnabled',true);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper('A4', 'portrait');
-        $dompdf->render();
+        $raw_data = file_get_contents($filename);
+        if (empty($raw_data)) {
+            throw new Exception('File not readable or empty.');
+        }
 
-        // Output PDF
-        $pdfContent = $dompdf->output();
-
-        return new Response($pdfContent, 200, [
-            'Content-Type' => 'application/pdf',
-        ]);
+        return "data:{$mime};base64," . base64_encode($raw_data);
     }
+
+    // Render PDF using template with embedded image
+    $html = $this->renderView('reclamation/rapport.html.twig', [
+        'reclamation' => $reclamation,
+        'imageDataUrl' => imageToDataUrl('uploads/' . $recImage),
+        'medecinName' => $medecinName, // Include medecinName variable here
+    ]);
+
+    // Generate PDF
+    $dompdf = new Dompdf();
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper('A4', 'portrait');
+    $dompdf->render();
+
+    // Output PDF
+    $pdfContent = $dompdf->output();
+
+    return new Response($pdfContent, 200, [
+        'Content-Type' => 'application/pdf',
+    ]);
+}
+
+
 
 
     #[Route('/showAll', name: 'app_reclamation_index', methods: ['GET'])]
@@ -73,6 +103,8 @@ class ReclamationController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $reclamation = new Reclamation();
+        $currentUser = $this->getUser();
+        $reclamation->setUser($currentUser);
         $form = $this->createForm(ReclamationType::class, $reclamation);
         $form->handleRequest($request);
         
@@ -135,6 +167,7 @@ public function edit(Request $request, int $id, EntityManagerInterface $entityMa
         'form' => $form->createView(),
     ]);
 }
+
 #[Route('/delete/{id}', name: 'app_reclamation_delete', methods: ['GET'])]
 public function delete(Request $request, int $id, EntityManagerInterface $entityManager): Response
 {
@@ -143,9 +176,49 @@ public function delete(Request $request, int $id, EntityManagerInterface $entity
         throw $this->createNotFoundException('Reclamation not found');
     }
 
+    // Find and delete related responses
+    $responses = $reclamation->getReponses();
+    foreach ($responses as $response) {
+        $entityManager->remove($response);
+    }
+
+    // Delete the reclamation itself
     $entityManager->remove($reclamation);
     $entityManager->flush();
 
     return $this->redirectToRoute('reclamation', [], Response::HTTP_SEE_OTHER);
 }
+
+
+#[Route('/chart', name: 'reclamation_chart', methods: ['GET'])]
+public function pieChart(ReclamationRepository $reclamationRepository): Response
+{
+    $reclamation = $reclamationRepository->findAll();
+    $recNumber = count($reclamation);
+    
+    // Count the number of reclamations for each type
+    $complaintCount = $reclamationRepository->countByType('plainte');
+    $suggestionCount = $reclamationRepository->countByType('Suggestion');
+    $informationRequestCount = $reclamationRepository->countByType('demande information');
+    
+    // Calculate percentages
+    $complaintPercentage = ($complaintCount / $recNumber) * 100;
+    $suggestionPercentage = ($suggestionCount / $recNumber) * 100;
+    $informationRequestPercentage = ($informationRequestCount / $recNumber) * 100;
+
+    $reclamationsResolues = count($reclamationRepository->findByEtat('Resolu'));
+    $reclamationsEnAttente = count($reclamationRepository->findByEtat('En attente'));
+    $reclamationsEnCours = count($reclamationRepository->findByEtat('En Cours'));
+
+    // Render the view with the counts
+    return $this->render('reclamation/chartReclamation.html.twig', [
+        'complaintPercentage' => $complaintPercentage,
+        'suggestionPercentage' => $suggestionPercentage,
+        'informationRequestPercentage' => $informationRequestPercentage,
+        'reclamationsResolues' => $reclamationsResolues,
+        'reclamationsEnAttente' => $reclamationsEnAttente,
+        'reclamationsEnCours' => $reclamationsEnCours,
+    ]);
 }
+}
+

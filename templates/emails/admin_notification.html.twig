@@ -1,0 +1,25 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notification de nouvelle inscription d'utilisateur</title>
+</head>
+<body>
+    <h2>Bonjour l'administrateur,</h2>
+
+    <p>Un nouvel utilisateur s'est inscrit sur le site. Voici les détails :</p>
+
+    <ul>
+        <li><strong>ID de l'utilisateur :</strong> {{ user.id }}</li>
+        <li><strong>Nom d'utilisateur :</strong> {{ user.nom }}</li>
+        <li><strong>Email :</strong> {{ user.email }}</li>
+        {# Ajoutez les détails supplémentaires de l'utilisateur que vous souhaitez inclure dans la notification #}
+    </ul>
+
+    <p>Merci de votre attention.</p>
+
+    <p>Cordialement,<br>
+    L'équipe de votre site</p>
+</body>
+</html>

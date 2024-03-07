@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Appointment Created</title>
+</head>
+<body>
+    <h2>New Appointment Details</h2>
+    <p>
+        Hello {{ currentUser.username }},<br>
+        You have successfully booked a new appointment.<br>
+        Here are the appointment details:<br>
+        Date: {{ rendezvous.date|date('Y-m-d H:i') }}<br>
+        Doctor: {{ rendezvous.doctor.nom }} {{ rendezvous.doctor.prenom }}<br>
+        <!-- Add more details as needed -->
+    </p>
+</body>
+</html>

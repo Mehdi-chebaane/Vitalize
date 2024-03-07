@@ -10,39 +10,7 @@
   <meta content="" name="keywords">
 
   {% block css %}
-  	<!-- CSS for full calender -->
-	<link
-	href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.css" rel="stylesheet"/>
-	<!-- JS for jQuery -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<!-- JS for full calender -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.9.0/fullcalendar.min.js"></script>
-	<!-- bootstrap css and js -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@1,500&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@700&display=swap" rel="stylesheet">
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.css">
+  
   {# Favicons #}
   <link href= "{{ asset('front/img/favicon.png') }}" rel="icon">
   <link href= "{{ asset('front/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
@@ -61,12 +29,13 @@
 
   {# Template Main CSS File #}
   <link href="{{ asset('front/css/main.css') }}" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.0/main.min.css" integrity="sha256-uq9PNlMzB+1h01Ij9cx7zeE2OR2pLAfRw3uUUOOPKdA=" crossorigin="anonymous">
 
   {% endblock %}
 
-{# ======= Header ======= #}
-  {% block header %}
+</head>
+
+
+{% block header %}
 
   <header id="header" class="header fixed-top d-flex align-items-center">
     <div class="container-fluid d-flex align-items-center justify-content-between">
@@ -79,201 +48,51 @@
       </a>
 
       {# Nav Menu #}
-      <nav id="navmenu" class="navmenu" >
+      <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="{{ path('app_home') }}#about">About</a></li>
-          <li><a href="{{ path('app_home') }}#hero">Home</a></li>
-          <li class="dropdown has-dropdown"><a href="{{ path('app_activite_index') }}"><span>Activités</span> <i class="bi bi-chevron-down"></i></a>
+          <li><a href="{{ path('home') }}#about">About</a></li>
+          <li><a href="{{ path('home') }}#hero" class="active">Home</a></li>
+          <li><a href="{{ path('home') }}#services">Services</a></li>
+          <li><a href="{{ path('home') }}#portfolio">Portfolio</a></li>
+          <li><a href="{{ path('home') }}#team">Team</a></li>
+          <li class="dropdown has-dropdown"><a href="{{ asset('#') }}"><span>Dropdown</span> <i class="bi bi-chevron-down"></i></a>
             <ul class="dd-box-shadow">
-              <li><a href="{{ path('app_activite_new') }}">Ajouter une activité</a></li>
+              <li><a href="{{ asset('#') }}">Dropdown 1</a></li>
+              <li class="dropdown has-dropdown"><a href="{{ asset('#') }}"><span>Deep Dropdown</span> <i class="bi bi-chevron-down"></i></a>
+                <ul class="dd-box-shadow">
+                  <li><a href="{{ asset('#') }}">Deep Dropdown 1</a></li>
+                  <li><a href="{{ asset('#') }}">Deep Dropdown 2</a></li>
+                  <li><a href="{{ asset('#') }}">Deep Dropdown 3</a></li>
+                  <li><a href="{{ asset('#') }}">Deep Dropdown 4</a></li>
+                  <li><a href="{{ asset('#') }}">Deep Dropdown 5</a></li>
+                </ul>
+              </li>
+              <li><a href="{{ asset('#') }}">Dropdown 2</a></li>
+              <li><a href="{{ asset('#') }}">Dropdown 3</a></li>
+              <li><a href="{{ asset('#') }}">Dropdown 4</a></li>
             </ul>
           </li>
-          <li class="dropdown has-dropdown"><a href="{{ path('app_evenement_index') }}"><span>Evènement</span> <i class="bi bi-chevron-down"></i></a>
-            <ul class="dd-box-shadow">
-              <li><a href="{{ path('app_evenement_new') }}">Ajouter un évènement</a></li>
-              <li><a href="{{ path('calendar') }}">Calendrier</a></li>
-            </ul>
-          </li>
-          <li><a href="{{ path('app_home') }}#team">Team</a></li>
           <li><a href="{{ asset('home') }}#contact">Contact</a></li>
         </ul>
 
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>{# End Nav Menu #}
-
-      <a class="btn-getstarted" href="{{ asset('base.html.twig#about') }}">Get Started</a>
-
+<div>
+      <a class="btn-getstarted" href="{{ path ('app_user') }}"> Profil </a>&nbsp &nbsp
+      <a class="btn-getstarted" href="{{ path ('app_logout') }}"> Deconnexion </a>
+      
+      
+ </div>
     </div>
   </header>{# End Header #}
-   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>Display a map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<div style="margin-bottom: 10px;">
-</div>
-
-{% block stylesheets %}
-    
-<style>
-/* Container styling */
-
-
-/* Sort By dropdown styling */
-#sort {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-right: 10px;
-}
-
-/* Search form styling */
-
-label {
-    margin-right: 10px;
-}
-
-#search-input {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    margin-right: 10px;
-}
-
-button {
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
-    background-color: #3498db;
-    color: #fff;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #2980b9;
-}
-
-      #map {position: absolute; top: 100px; right: 0; bottom: 0; left: 0;}
-
-
-.calendar-container {
-	background: #fff;
-	width: 450px;
-	border-radius: 10px;
-	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
-  margin-left: 500px;
-  margin-top: 57px;
-
-}
-
-.calendar-container header {
-	display: flex;
-	align-items: center;
-	padding: 25px 30px 10px;
-	justify-content: space-between;
-}
-
-header .calendar-navigation {
-	display: flex;
-}
-
-header .calendar-navigation span {
-	height: 38px;
-	width: 200px;
-	margin: 0 1px;
-	cursor: pointer;
-	text-align: center;
-	line-height: 38px;
-	border-radius: 50%;
-	user-select: none;
-	color: #aeabab;
-	font-size: 1.9rem;
-}
-
-.calendar-navigation span:last-child {
-	margin-right: -10px;
-}
-
-header .calendar-navigation span:hover {
-	background: #f2f2f2;
-}
-
-header .calendar-current-date {
-	font-weight: 500;
-	font-size: 1.45rem;
-}
-
-.calendar-body {
-	padding: 20px;
-}
-
-.calendar-body ul {
-	list-style: none;
-	flex-wrap: wrap;
-	display: flex;
-	text-align: center;
-}
-
-.calendar-body .calendar-dates {
-	margin-bottom: 20px;
-}
-
-.calendar-body li {
-	width: calc(100% / 7);
-	font-size: 1.07rem;
-	color: #414141;
-}
-
-.calendar-body .calendar-weekdays li {
-	cursor: default;
-	font-weight: 500;
-}
-
-.calendar-body .calendar-dates li {
-	margin-top: 30px;
-	position: relative;
-	z-index: 1;
-	cursor: pointer;
-}
-
-.calendar-dates li.inactive {
-	color: #aaa;
-}
-
-.calendar-dates li.active {
-	color: #fff;
-}
-
-.calendar-dates li::before {
-	position: absolute;
-	content: "";
-	z-index: -1;
-	top: 50%;
-	left: 50%;
-	width: 40px;
-	height: 40px;
-	border-radius: 50%;
-	transform: translate(-50%, -50%);
-}
-
-.calendar-dates li.active::before {
-	background: #6332c5;
-}
-
-.calendar-dates li:not(.active):hover::before {
-	background: #e4e1e1;
-}
-    
-</style>
-{% endblock %}
   {% endblock %}
-
-</head>
 {% block body %}
-        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.3.0/main.min.js" integrity="sha256-DBxkGZLxKsLKhz054qUpBqtotG00r9AELGpSigJujLg=" crossorigin="anonymous"></script>
-
 <body class="index-page" data-bs-spy="scroll" data-bs-target="#navmenu">
 
+
+{# ======= Header ======= #}
+  
 
 
   <main id="main">
@@ -1315,7 +1134,7 @@ header .calendar-current-date {
       <div class="row gy-4">
         <div class="col-lg-5 col-md-12 footer-about">
           <a href="{{ asset('base.html.twig') }}" class="logo d-flex align-items-center">
-            <span>Vitalize</span>
+            <span>Append</span>
           </a>
           <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
           <div class="social-links d-flex mt-4">

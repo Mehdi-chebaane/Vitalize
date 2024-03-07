@@ -26,6 +26,10 @@ class Commentaire
     #[Assert\NotBlank(message: "id_pub Cannot be empty")]
     private ?Publication $id_pub = null;
 
+    #[ORM\ManyToOne(targetEntity: Commentaire::class)]
+    #[ORM\JoinColumn(nullable: true)] 
+    private ?Commentaire $parentComment = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -66,4 +70,16 @@ class Commentaire
 
         return $this;
     }
+
+    public function getParentComment(): ?Commentaire
+    {
+        return $this->parentComment;
+    }
+
+    public function setParentComment(?Commentaire $parentComment): self
+{
+    $this->parentComment = $parentComment;
+
+    return $this;
+}
 }

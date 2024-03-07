@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Fichepatient Created</title>
+</head>
+<body>
+    <h1>New Fichepatient Created</h1>
+    <p>A new fichepatient has been created.</p>
+    <p>Fichepatient Details:</p>
+    <ul>
+        <li>ID: {{ fichepatient.id }}</li>
+        <li>Weight: {{ fichepatient.weight }}</li>
+        <li>Muscle Mass: {{ fichepatient.muscleMass }}</li>
+        <li>Height: {{ fichepatient.height }}</li>
+        <li>Allergies: {{ fichepatient.allergies }}</li>
+        <li>Illnesses: {{ fichepatient.illnesses }}</li>
+        <li>Breakfast: {{ fichepatient.breakfast }}</li>
+        <li>Midday: {{ fichepatient.midday }}</li>
+        <li>Dinner: {{ fichepatient.dinner }}</li>
+        <li>Snacks: {{ fichepatient.snacks }}</li>
+        <li>Calories: {{ fichepatient.calories }}</li>
+        <li>Other: {{ fichepatient.other }}</li>
+    </ul>
+     {{ advice|raw }}
+</body>
+</html>

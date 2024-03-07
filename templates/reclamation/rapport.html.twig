@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reclamation Details</title>
+    <style>
+        /* Define your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .reclamation-info {
+            margin-bottom: 20px;
+        }
+        .reclamation-info p {
+            margin: 5px 0;
+        }
+        .reclamation-file {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .reclamation-file img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 5px; /* Ajoutez des coins arrondis */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ajoute une ombre légère */
+}
+    </style>
+</head>
+​
+<body>
+    <h1>Reclamation Details</h1>
+    <div class="reclamation-info">
+        <p><strong>Subject:</strong> {{ reclamation.sujet }}</p>
+        <p><strong>Date de soumission:</strong> {{ reclamation.date ? reclamation.date|date('Y-m-d') : '' }}</p>
+        <p><strong>Type de la reclamation:</strong> {{ reclamation.type }}</p>
+        <p><strong>Medecin Concerné:</strong> {{ medecinName }}</p>
+        <p><strong>Description:</strong> {{ reclamation.description }}</p>
+        <!-- Add more fields from your reclamation entity as needed -->
+    </div>
+ <div class="reclamation-file">
+        <img src="{{ imageDataUrl }}" alt="Reclamation Image">
+    </div>
+</body>
+</html>

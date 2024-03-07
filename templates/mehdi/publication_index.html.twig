@@ -77,7 +77,7 @@ input {
     border-radius: 10px;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
     overflow: hidden;
-    width: 300px;
+    width: auto;
     flex-grow: 1;
 }
 
@@ -196,20 +196,29 @@ span {
       </a>
       <nav id="navmenu" class="navmenu">
         <ul>
-            <li><a href="{{ path('home') }}" class="active" style="color: red;">Home</a></li>
-            <li><a href="#" style="color: red;">About</a></li>
+            
             <li><a href="{{ path('app_publication_index') }}" style="color: red;">Publication</a></li>
+            {% if  is_granted('ROLE_MEDECIN') %}                     
+           <li><a href="{{ path('app_fiche_index') }}#fichedespatients">Medecin</a></li>
+            {% endif %}
+            <li><a href="{{ path('app_rendez_vous') }}#portfolio"class="active">Appointment</a></li>
      
             <li><a href="{{ path('app_meal') }}" style="color: red;">Meals</a></li>
             <li><a href="{{ path('app_commande_index') }}" style="color: red;">Mes commandes</a></li>
             <li class="dropdown has-dropdown"><a href="{{ path('app_activite_index') }}"><span>Activités</span> <i class="bi bi-chevron-down"></i></a>
+             {% if  is_granted('ROLE_MEDECIN') %}
+            
+                
               <ul class="dd-box-shadow">
                 <li><a href="{{ path('app_activite_new') }}">Ajouter une activité</a></li>
               </ul>
+               {% endif %}
             </li>
             <li class="dropdown has-dropdown"><a href="{{ path('app_evenement_index') }}"><span>Evènement</span> <i class="bi bi-chevron-down"></i></a>
               <ul class="dd-box-shadow">
-                <li><a href="{{ path('app_evenement_new') }}">Ajouter un évènement</a></li>
+                 {% if  is_granted('ROLE_MEDECIN') %}
+                 <li><a href="{{ path('app_evenement_new') }}">Ajouter un évènement</a></li>
+                    {% endif %}
                 <li><a href="{{ path('calendar') }}">Calendrier</a></li>
               </ul>
             </li>

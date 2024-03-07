@@ -51,13 +51,7 @@
           {% endif %}
         </div>
   
-        <div class="form-group text-center">
-          <label for="{{ form.video.vars.id }}">{{ form.video.vars.label }}</label>
-          {{ form_widget(form.video, {'attr': {'class': 'form-control', 'style': 'width: 50%; margin: 0 auto;'}}) }}
-          {% if form_errors(form.video) %}
-            {{ form_errors(form.video) }}
-          {% endif %}
-        </div>
+        
   
         <div class="form-group" style="display: none;">
           <label for="{{ form.id_user.vars.id }}">{{ form.id_user.vars.label }}</label>

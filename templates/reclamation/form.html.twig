@@ -1,0 +1,43 @@
+
+{% block form %}
+<div class="info-item" data-aos="fade" data-aos-delay="500">
+    {{ form_start(form, { 'method': 'POST', 'action': formAction, 'attr': {'novalidate': 'novalidate'} }) }}
+
+    <div class="row gy-4">
+        <div class="col-md-6">
+
+        {{ form_widget(form.type, {'attr': {'class': 'btn custom-btn btn-sm dropdown-toggle'}}) }}   
+        </div>
+        <div class="input-group mb-3">
+            {{ form_label(form.medecin, 'Medecin Concerné', {'label_attr': {'class': 'input-group-text'}}) }}
+            {{ form_widget(form.medecin, {'attr': {'class': 'form-select'}}) }}
+        </div>
+
+        <div class="col-md-12">
+            {{ form_widget(form.sujet, {'attr': {'class': 'form-control'}}) }}
+             {{ form_errors(form.sujet) }}
+        </div>
+        <div class="col-md-12">
+            {{ form_row(form.description, {
+                'label':false,
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Description',
+                    'rows': 6,
+                }
+            }) }}
+            
+        </div>
+
+        <div class="col-md-12 ">
+            {{ form_label(form.file, 'Veuillez insèrer des documents liés à votre réclamation', {'class': 'form-label'}) }}
+            {{ form_widget(form.file, {'attr': {'class': 'form-control', 'multiple': true}}) }}
+        </div>
+
+        <div class="col-md-12 text-center">        
+            {{ form_widget(form.submitButton, {'attr': {'class': 'btn custom-btn', 'style': 'background-color: #1F51FF;'}}) }}
+        </div>
+    </div>
+</div>
+{{ form_end(form) }}
+{% endblock %}

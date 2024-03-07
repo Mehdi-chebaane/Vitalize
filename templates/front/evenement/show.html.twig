@@ -73,13 +73,18 @@
 		</tbody>
 	</td>
 </tr></tbody></table>
-<a href="{{ path('app_evenement_edit', {'idevenement': evenement.idevenement}) }}" class="btn btn-warning">Edit</a>
+{% if app.user.nom == evenement.organisateur %}
+    <a href="{{ path('app_evenement_edit', {'idevenement': evenement.idevenement}) }}" class="btn btn-warning">Edit</a>
+{% endif %}
+
 <a href="{{ path('app_evenement_index') }}" class="btn btn-danger">back to list</a>
+{% if app.user.nom == evenement.organisateur %}
 <form method="post" action="{{ path('app_evenement_delete', {'idevenement': evenement.idevenement}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+	
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.idevenement) }}">
     <button class="btn btn-primary">Delete</button>
 </form>
-
+{% endif %}	
 </div>
 </div>
 {% endblock  %}

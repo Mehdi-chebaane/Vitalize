@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -31,11 +32,14 @@ class EvenementController extends AbstractController
             'search'=>$search
         ]);
     }
-
+    #[IsGranted("ROLE_MEDECIN")]
     #[Route('/new', name: 'app_evenement_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $evenement = new Evenement();
+        $currentUser = $this->getUser();
+        $organizerName = $currentUser->getNom();
+        $evenement->setOrganisateur($organizerName);
         $form = $this->createForm(EvenementType::class, $evenement);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -69,7 +73,7 @@ class EvenementController extends AbstractController
             'evenementRepository'=>$evenementRepository
         ]);
     }
-
+    
     #[Route('/{idevenement}/edit', name: 'app_evenement_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
     {
@@ -119,7 +123,7 @@ class EvenementController extends AbstractController
         $evenements = $evenementRepository->searchAndSort($search, $sort);
 
             
-        return $this->render('back/evenement/index.html.twig', [
+        return $this->render('admin/evenement/index.html.twig', [
             'evenementRepository'=>$evenementRepository,
             'evenements' => $evenements,
             'sort' => $sort, 
@@ -131,6 +135,9 @@ class EvenementController extends AbstractController
     public function newadmin(Request $request, EntityManagerInterface $entityManager): Response
     {
         $evenement = new Evenement();
+        $currentUser = $this->getUser();
+        $organizerName = $currentUser->getNom();
+        $evenement->setOrganisateur($organizerName);
         $form = $this->createForm(EvenementType::class, $evenement);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -144,7 +151,7 @@ class EvenementController extends AbstractController
             $entityManager->flush();
             return $this->redirectToRoute('adminapp_evenement_index', [], Response::HTTP_SEE_OTHER);
         }
-        return $this->render('back/evenement/new.html.twig', [
+        return $this->render('admin/evenement/new.html.twig', [
             'evenement' => $evenement,
             'form' => $form->createView(),
         ]);
@@ -155,7 +162,7 @@ class EvenementController extends AbstractController
     {   
         $activites = $entityManager->getRepository(Activite::class)->findBy(['idevenement' => $evenement]);
 
-        return $this->render('back/evenement/show.html.twig', [
+        return $this->render('admin/evenement/show.html.twig', [
             'evenement' => $evenement,
             'activites' => $activites,
 
@@ -185,7 +192,7 @@ class EvenementController extends AbstractController
             return $this->redirectToRoute('adminapp_evenement_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('back/evenement/edit.html.twig', [
+        return $this->render('admin/evenement/edit.html.twig', [
             'evenement' => $evenement,
             'form' => $form->createView(),
         ]);
@@ -195,7 +202,10 @@ class EvenementController extends AbstractController
     {
         $idevenement = $request->request->get('idevenement');
         $action = $request->request->get('action');
-
+        $currentUser = $this->getUser();
+    
+    
+            $userId = $currentUser->getId();
         $evenement = $evenementRepository->find($idevenement);
 
         if (!$evenement) {
@@ -203,9 +213,9 @@ class EvenementController extends AbstractController
         }
 
         if       ($action === 'add') {
-            $evenementRepository->addReservation($idevenement,150);
+            $evenementRepository->addReservation($idevenement,$userId);
         } elseif ($action === 'delete') {
-            $evenementRepository->deleteReservation($idevenement,150);
+            $evenementRepository->deleteReservation($idevenement,$userId);
         }
         
 
@@ -216,9 +226,13 @@ class EvenementController extends AbstractController
         public function handleReservationRecherche(Request $request, EvenementRepository $evenementRepository)
         {
             $idevenement = $request->attributes->get('idevenement');
-            $userid = 150; // Replace with the actual user ID
+            
+            $currentUser = $this->getUser();
+    
+    
+            $userId = $currentUser->getId();
 
-            $reservationExists = $evenementRepository->Recherche($idevenement, $userid);
+            $reservationExists = $evenementRepository->Recherche($idevenement, $userId);
 
             return new JsonResponse(['success' => $reservationExists]);
         }

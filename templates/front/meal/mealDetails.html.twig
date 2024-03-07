@@ -39,7 +39,7 @@
               <li><strong>Category</strong> {{ meals.typeRepas }}</li>
               <li><strong>nombre de personne</strong>{{ meals.nombrePersonnes }} </li>
               <li><strong>Durée de preparation </strong>  {{ meals.dureePreparation}}</li>
-              <li><strong>prix </strong> {{ meals.prix}}</li>
+              <li><strong>prix </strong> {{ meals.prix}} TND </li>
               <a href="{{ path('add_to_cart', {'id': meals.id}) }}" class="btn-visit align-self-start">Ajouter au panier</a>
 
             </ul>

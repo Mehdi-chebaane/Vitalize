@@ -70,7 +70,7 @@ public function mealDetails(Meal $meal, Request $request, EntityManagerInterface
     $meals = $paginator->paginate(
         $query,
         $request->query->getInt('page', 1), // Current page number, default to 1
-        3// Number of items per page
+        4// Number of items per page
     );
         return $this->render('admin/meal/index.html.twig', [
             'meals' => $meals,

@@ -13,7 +13,7 @@ class Activite
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private $id_activite;
+    private ?int $id_activite;
 
     #[ORM\Column(length: 255)]
     private $type_activite;

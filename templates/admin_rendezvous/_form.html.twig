@@ -1,18 +1,25 @@
 {# Render the form #}
+{# templates/rendez_vous/new.html.twig #}
+
 {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'custom-form'}}) }}
     <div class="form-group">
         {{ form_label(form.date, 'Meeting Date and Time', {'label_attr': {'class': 'control-label'}}) }}
         {{ form_widget(form.date, {'attr': {'class': 'form-control datetime-input'}}) }}
         <small class="form-text text-muted">Meeting time must be within business hours (8:00 AM - 6:00 PM) and ONLY every 30 minutes Sharp.</small>
     </div>
-    {% for flashMessage in app.flashes('error') %}
-        <div class="alert alert-danger" role="alert">
-            {{ flashMessage }}
-        </div>
-    {% endfor %}
+    <div class="form-group">
+    <br><br>
+        <legend class="control-label">Appointment Type</legend>
+        <br>
+        {% for choice in form.type %}
+            <div class="form-check">
+                {{ form_widget(choice, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(choice, null, {'label_attr': {'class': 'form-check-label'}}) }}
+            </div>
+        {% endfor %}
+    </div>
     <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}
-
 
 {# Render the "Book" button as a button #}
 

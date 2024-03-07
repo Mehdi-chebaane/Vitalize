@@ -8,75 +8,7 @@
   
     <h1 class="title">Edit Commande</h1>
 
-    {{ form_start(form, {'attr': {'class': 'custom-form', 'novalidate': 'novalidate'}}) }}
-    <br>
-        <div class="form-group">
-            {{ form_label(form.etatCommande) }}
-            {{ form_widget(form.etatCommande, {'attr': {'class': 'form-control half-width'}}) }}
-            {% if form_errors(form.etatCommande) %}
-                <div class="alert alert-danger">
-                    {{ form_errors(form.etatCommande) }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.instructionSpeciale) }}
-            {{ form_widget(form.instructionSpeciale, {'attr': {'class': 'form-control half-width'}}) }}
-            {% if form_errors(form.instructionSpeciale) %}
-                <div class="alert alert-danger">
-                    {{ form_errors(form.instructionSpeciale) }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.clientName) }}
-            {{ form_widget(form.clientName, {'attr': {'class': 'form-control half-width'}}) }}
-            {% if form_errors(form.clientName) %}
-                <div class="alert alert-danger">
-                    {{ form_errors(form.clientName) }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.clientAdresse) }}
-            {{ form_widget(form.clientAdresse, {'attr': {'class': 'form-control half-width'}}) }}
-            {% if form_errors(form.clientAdresse) %}
-                <div class="alert alert-danger">
-                    {{ form_errors(form.clientAdresse) }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.clientPhone) }}
-            {{ form_widget(form.clientPhone, {'attr': {'class': 'form-control half-width'}}) }}
-            {% if form_errors(form.clientPhone) %}
-                <div class="alert alert-danger">
-                    {{ form_errors(form.clientPhone) }}
-                </div>
-            {% endif %}
-        </div>
-
-        <div class="form-group">
-            {{ form_label(form.mealQuantities) }}
-            {{ form_widget(form.mealQuantities, {'attr': {'class': 'form-control half-width'}}) }}
-            {% if form_errors(form.mealQuantities) %}
-                <div class="alert alert-danger">
-                    {{ form_errors(form.mealQuantities) }}
-                </div>
-            {% endif %}
-        </div>
-    <br>
-        <button type="submit" class="btn btn-primary">Update</button>
-        <a href="{{ path('app_commande_index') }}">Back to List</a>
-        {{ include('front/commande/_delete_form.html.twig') }}
- <br>
-       
-        
-    {{ form_end(form) }}
+    {{ include('front/commande/_form.html.twig', {'button_label': 'Update'}) }}
   <br><br>
 
 {% endblock %}
