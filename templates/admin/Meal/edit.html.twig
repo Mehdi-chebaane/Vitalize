@@ -1,0 +1,14 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Edit Meal{% endblock %}
+
+{% block body %}
+
+<h1>Edit Meal</h1>
+{{ include('admin/meal/_form.html.twig', {'button_label': 'Update', 'class': 'btn btn-info me-2'}) }}
+
+
+<a href="{{ path('app_meal_index') }}" class="btn-back-to-list">back to list</a>
+ {{ include('admin/meal/_delete_form.html.twig') }}
+ 
+{% endblock %}

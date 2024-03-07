@@ -1,0 +1,48 @@
+{# Render the form #}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'custom-form'}}) }}
+    <div class="form-group">
+        {{ form_label(form.date, 'Meeting Date and Time', {'label_attr': {'class': 'control-label'}}) }}
+        {{ form_widget(form.date, {'attr': {'class': 'form-control datetime-input'}}) }}
+        <small class="form-text text-muted">Meeting time must be within business hours (8:00 AM - 6:00 PM) and ONLY every 30 minutes Sharp.</small>
+    </div>
+    {% for flashMessage in app.flashes('error') %}
+        <div class="alert alert-danger" role="alert">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}
+
+
+{# Render the "Book" button as a button #}
+
+<!-- Add the CSS styles here -->
+<style>
+/* Custom form styles */
+.custom-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Date and time input styles */
+.datetime-input {
+    width: 100%;
+}
+
+/* Additional form feedback styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.control-label {
+    font-weight: bold;
+}
+
+/* Error message styles */
+.form-text.text-muted {
+    color: #dc3545; /* Red color for error messages */
+    font-size: 0.9em;
+    display: block;
+    margin-top: 5px;
+}
+</style>

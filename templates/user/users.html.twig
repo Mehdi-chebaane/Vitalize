@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>{% block title %}Welcome{% endblock %}</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  {% block css %}
+  
+  {# Favicons #}
+  <link href= "{{ asset('front/img/favicon.png') }}" rel="icon">
+  <link href= "{{ asset('front/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  {# Fonts #}
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href= "https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
+  {# Vendor CSS Files #}
+  <link href="{{ asset('front/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('front/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <link href="{{ asset('front/vendor/glightbox/css/glightbox.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('front/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+  <link href="{{ asset('front/vendor/aos/aos.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  {# Template Main CSS File #}
+  <link href="{{ asset('front/css/main.css') }}" rel="stylesheet">
+
+  {% endblock %}
+
+
+</head>
+{% block header %}
+
+  <header id="header" class="header fixed-top d-flex align-items-center">
+  <div class="container-fluid d-flex align-items-center justify-content-between">
+      <a href="{{ path('home') }}" class="logo d-flex align-items-center me-auto me-xl-0">
+          <h1>Append</h1>
+          <span>.</span>
+      </a>
+      <nav id="navmenu" class="navmenu">
+          <ul>
+              <li><a href="{{ path('home') }}" class="active" style="color: red;">Home</a></li>
+              <li><a href="#" style="color: red;">About</a></li>
+              <li><a href="{{ path('app_publication_index') }}" style="color: red;">Publication</a></li>
+              <li><a href="{{ path('app_commentaire_index') }}" style="color: red;">Commentaire</a></li>
+              <li><a href="#" style="color: red;">Team</a></li>
+              <li><a href="#" style="color: red;">Blog</a></li>
+              <li class="dropdown has-dropdown">
+                  <a href="#" style="color: red;"><span style="color: red;">Dropdown</span> <i class="bi bi-chevron-down"></i></a>
+                  <ul class="dd-box-shadow">
+                      <li><a href="#" style="color: red;">Dropdown 1</a></li>
+                      <li class="dropdown has-dropdown"><a href="#" style="color: red;"><span style="color: red;">Deep Dropdown</span> <i class="bi bi-chevron-down"></i></a>
+                          <ul class="dd-box-shadow">
+                              <li><a href="#" style="color: red;">Deep Dropdown 1</a></li>
+                              <li><a href="#" style="color: red;">Deep Dropdown 2</a></li>
+                              <li><a href="#" style="color: red;">Deep Dropdown 3</a></li>
+                              <li><a href="#" style="color: red;">Deep Dropdown 4</a></li>
+                              <li><a href="#" style="color: red;">Deep Dropdown 5</a></li>
+                          </ul>
+                      </li>
+                      <li><a href="#" style="color: red;">Dropdown 2</a></li>
+                      <li><a href="#" style="color: red;">Dropdown 3</a></li>
+                      <li><a href="#" style="color: red;">Dropdown 4</a></li>
+                  </ul>
+              </li>
+             <li><a style="color: red;"  href="{{ path ('app_contact') }}">Contact</a></li>
+          </ul>
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+      <div>
+     <a class="btn-getstarted" href="{{ path ('app_user') }}"> Profil </a> &nbsp &nbsp
+      <a class="btn-getstarted" href="{{ path ('app_logout') }}"> Deconnexion </a>&nbsp
+       <a href="{{ path('show_cart') }}">
+        <i class="fa fa-shopping-cart"></i> Panier
+    </a>
+  </div>
+</header> 
+  {% endblock %}
+
+
+{% block body %}
+<body class="index-page" data-bs-spy="scroll" data-bs-target="#navmenu">
+
+
+{# ======= Header ======= #}
+  
+
+
+ 
+
+{% endblock %}
+
+  {# ======= Footer ======= #}
+{% block footer %}  
+  <footer id="footer" class="footer">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-about">
+          <a href="{{ asset('base.html.twig') }}" class="logo d-flex align-items-center">
+            <span>Append</span>
+          </a>
+          <p>Cras fermentum odio eu feugiat lide par naso tierra. Justo eget nada terra videa magna derita valies darta donna mare fermentum iaculis eu non diam phasellus.</p>
+          <div class="social-links d-flex mt-4">
+            <a href="{{ asset('#') }}"><i class="bi bi-twitter"></i></a>
+            <a href="{{ asset('#') }}"><i class="bi bi-facebook"></i></a>
+            <a href="{{ asset('#') }}"><i class="bi bi-instagram"></i></a>
+            <a href="{{ asset('#') }}"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Useful Links</h4>
+          <ul>
+            <li><a href="{{ asset('#') }}">Home</a></li>
+            <li><a href="{{ asset('#') }}">About us</a></li>
+            <li><a href="{{ asset('#') }}">Services</a></li>
+            <li><a href="{{ asset('#') }}">Terms of service</a></li>
+            <li><a href="{{ asset('#') }}">Privacy policy</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Our Services</h4>
+          <ul>
+            <li><a href="{{ asset('#') }}">Web Design</a></li>
+            <li><a href="{{ asset('#') }}">Web Development</a></li>
+            <li><a href="{{ asset('#') }}">Product Management</a></li>
+            <li><a href="{{ asset('#') }}">Marketing</a></li>
+            <li><a href="{{ asset('#') }}">Graphic Design</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Contact Us</h4>
+          <p>A108 Adam Street</p>
+          <p>New York, NY 535022</p>
+          <p>United States</p>
+          <p class="mt-4"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
+          <p><strong>Email:</strong> <span>info@example.com</span></p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>&copy; <span>Copyright</span> <strong class="px-1">Append</strong> <span>All Rights Reserved</span></p>
+      <div class="credits">
+        {# All the links in the footer should remain intact. #}
+        {# You can delete the links only if you've purchased the pro version. #}
+        {# Licensing information: https://bootstrapmade.com/license/ #}
+        {# Purchase the pro version with working PHP/AJAX contact form: [buy-url] #}
+        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+      </div>
+    </div>
+    {# Scroll Top Button #}
+    <a href="{{ asset('#') }}" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    {# Preloader #}
+  <div id="preloader">
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
+
+  </footer>{# End Footer #}
+{% endblock %}  
+  
+
+  
+  {% block js %}
+  {# Vendor JS Files #}
+  <script src="{{ asset('front/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ asset('front/vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ asset('front/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+  <script src="{{ asset('front/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ asset('front/vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ asset('front/vendor/aos/aos.js') }}"></script>
+  <script src="{{ asset('front/vendor/php-email-form/validate.js') }}"></script>
+
+  {# Template Main JS File #}
+  <script src="{{ asset('front/js/main.js') }}"></script>
+  {% endblock %}
+  
+
+
+</body>
+
+</html>

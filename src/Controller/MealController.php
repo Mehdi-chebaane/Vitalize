@@ -13,7 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Knp\Component\Pager\PaginatorInterface;
 
 
 
@@ -54,17 +55,25 @@ public function mealDetails(Meal $meal, Request $request, EntityManagerInterface
     }
 
     return $this->render('front/meal/mealDetails.html.twig', [
-        'meal' => $meal,
+        'meals' => $meal,
         'form' => $form->createView(),
     ]);
 }
 
 
     #[Route('/list', name: 'app_meal_index', methods: ['GET'])]
-    public function index(MealRepository $mealRepository): Response
-    {
+    public function index(MealRepository $mealRepository, PaginatorInterface $paginator, Request $request): Response
+    {    $query = $mealRepository->createQueryBuilder('c')
+        ->getQuery();
+
+    // Paginate the query
+    $meals = $paginator->paginate(
+        $query,
+        $request->query->getInt('page', 1), // Current page number, default to 1
+        3// Number of items per page
+    );
         return $this->render('admin/meal/index.html.twig', [
-            'meals' => $mealRepository->findAll(),
+            'meals' => $meals,
             
         ]);
     }
@@ -75,7 +84,7 @@ public function mealDetails(Meal $meal, Request $request, EntityManagerInterface
         $meal = new Meal();
         $form = $this->createForm(MealType::class, $meal);
         $form->handleRequest($request);
-
+        $meal-> setQuantity(0);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($meal);
             $entityManager->flush();
@@ -126,8 +135,8 @@ public function mealDetails(Meal $meal, Request $request, EntityManagerInterface
 
         return $this->redirectToRoute('app_meal_index', [], Response::HTTP_SEE_OTHER);
     }
-  
-   
+    
+
     
  
 }

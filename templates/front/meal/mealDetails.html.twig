@@ -1,0 +1,80 @@
+{% extends 'front/ghofrane/detailsM.html.twig' %}
+
+
+{% block body %}
+<div data-aos="fade" class="page-title">
+  <div class="heading">
+    <div class="container">
+      <div class="row d-flex justify-content-center text-center"></div>
+    </div>
+  </div>
+  <nav class="breadcrumbs">
+    <div class="container">
+      <ol>
+        <li><a href="{{ path('app_meal') }}">Meals</a></li>
+        <li class="current">Portfolio Details</li>
+      </ol>
+    </div>
+  </nav>
+</div>
+
+<!-- Portfolio-details Section - Portfolio Details Page -->
+<section id="portfolio-details" class="portfolio-details">
+  <div class="container" data-aos="fade-up">
+    <div class="row justify-content-between align-items-center">
+      <div class="col-lg-6" data-aos="fade-up">
+        <div class="portfolio-details-slider swiper">
+          <div class="swiper-slide">
+            <img src="{{ asset(meals.image) }}" alt="{{ meals.nomRepas }}">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+        <div class="portfolio-description">
+          <div class="portfolio-info">
+            <h2>{{ meals.nomRepas }}</h2>
+            <h3>Meal informations</h3>
+            <ul>
+              <li><strong>Category</strong> {{ meals.typeRepas }}</li>
+              <li><strong>nombre de personne</strong>{{ meals.nombrePersonnes }} </li>
+              <li><strong>Durée de preparation </strong>  {{ meals.dureePreparation}}</li>
+              <li><strong>prix </strong> {{ meals.prix}}</li>
+              <a href="{{ path('add_to_cart', {'id': meals.id}) }}" class="btn-visit align-self-start">Ajouter au panier</a>
+
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-5 containerD">
+      <div class="col-lg-6 ingredients">
+        <h3 class="fas fa-utensils ii">Ingrédients :</h3>
+        <ul>
+          {% set ingredientsArray = meals.ingredients|split(',') %}
+          {% for ingredient in ingredientsArray %}
+          <li>{{ ingredient }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="col-lg-6 recette">
+        <h3 class="fas fa-book ri">Recette:</h3>
+        <ol>
+          {% set recetteArray = meals.recette|split('.') %}
+          {% for step in recetteArray %}
+          <li>{{ step }}</li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+</section><!-- End Portfolio-details Section -->
+{% endblock %}

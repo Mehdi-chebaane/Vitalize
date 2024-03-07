@@ -1,0 +1,338 @@
+{% extends 'mehdi/publication_show.html.twig' %}
+
+{% block title %}Publication{% endblock %}
+
+{% block body %}
+
+<br><br><br><br><br>
+
+<div class="container d-flex justify-content-center">
+    <div class="card">
+        <img src="{{ publication.image }}" class="card__image" alt="Publication Image" />
+        <div class="card__content">
+            <div class="text-center mt-3">
+                <h2>{{ publication.titre }}</h2>
+                <br> <br>
+                <p>{{ publication.description }}</p>
+            </div>
+            <br><br>
+            <div class="text-center mt-3">
+                <div class="text-center mt-3">
+                    {% set likeCount = 0 %}
+                    {% set dislikeCount = 0 %}
+                    {% for react in publication.getReacts() %}
+                        {% set likeCount = likeCount + react.getLikeCount() %}
+                        {% set dislikeCount = dislikeCount + react.getDislikeCount() %}
+                    {% endfor %}
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <form action="{{ path('like_publication', {'id': publication.id}) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="btn" id="green"><i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i></button>
+                        </form>
+                        <h3 style="margin-left: 10px; margin-right: 20px;">{{ likeCount }}</h3>
+                        <form action="{{ path('dislike_publication', {'id': publication.id}) }}" method="POST" style="display: inline;">
+                            <button type="submit" class="btn" id="red"><i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i></button>
+                        </form>
+                        <h3 style="margin-left: 10px; margin-right: 20px;">{{ dislikeCount }}</h3>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <div class="text-center mt-3">
+                {{ include('front/publication/_delete_form.html.twig', { 'publication': publication }) }}
+                
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+            
+    </div>
+</div> 
+    <div class="text-center mt-3">
+        <p><img src="{{ path('publication_qr_code', {'id': publication.id}) }}" alt="QR Code" width="200" height="200"></p>
+
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Publication</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css">
+    
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-8">
+
+            <style>
+                /* Your CSS styles here */
+                body {
+                    background-color: #f7f6f6;
+                }
+
+                .card {
+                    border: none;
+                    box-shadow: 5px 6px 6px 2px #e9ecef;
+                    border-radius: 4px;
+                }
+
+                .dots {
+                    height: 4px;
+                    width: 4px;
+                    margin-bottom: 2px;
+                    background-color: #bbb;
+                    border-radius: 50%;
+                    display: inline-block;
+                }
+
+                .badge {
+                    padding: 7px;
+                    padding-right: 9px;
+                    padding-left: 16px;
+                    box-shadow: 5px 6px 6px 2px #e9ecef;
+                }
+
+                .user-img {
+                    margin-top: 4px;
+                }
+
+                .check-icon {
+                    font-size: 17px;
+                    color: #c3bfbf;
+                    top: 1px;
+                    position: relative;
+                    margin-left: 3px;
+                }
+
+                .form-check-input {
+                    margin-top: 6px;
+                    margin-left: -24px !important;
+                    cursor: pointer;
+                }
+
+                .form-check-input:focus {
+                    box-shadow: none;
+                }
+
+                .icons i {
+                    margin-left: 8px;
+                }
+
+                .reply {
+                    margin-left: 12px;
+                }
+
+                .reply small {
+                    color: #b7b4b4;
+                }
+
+                .reply small:hover {
+                    color: green;
+                    cursor: pointer;
+                }
+
+                .comment-action-btn {
+                    padding: 0.25rem 0.5rem; /* Adjust padding to make the buttons smaller */
+                    font-size: 0.85rem; /* Reduce font size */
+                    border-radius: 0.25rem; /* Add rounded corners */
+                    margin-right: 0.5rem; /* Add some spacing between buttons */
+                }
+            
+                .comment-action-btn.modify-btn {
+                    background-color: #007bff; /* Blue color for "Modify" button */
+                    color: #fff; /* White text color */
+                    border: none; /* Remove border */
+                }
+            
+                .comment-action-btn.delete-btn {
+                    background-color: #dc3545; /* Red color for "Delete" button */
+                    color: #fff; /* White text color */
+                    border: none; /* Remove border */
+                }
+            
+                .comment-action-btn:hover {
+                    text-decoration: none; /* Remove underline on hover */
+                }
+
+                
+            </style>
+
+            <div class="headings d-flex justify-content-between align-items-center mb-3">
+                <div class="text-center mt-3">
+                <h5>See the comments HERE !</h5>
+                </div>
+                <div class="buttons">
+                    <span class="badge bg-white d-flex flex-row align-items-center">
+                        <span class="text-primary">Comments</span>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="toggleComments" checked>
+                        </div>
+                    </span>
+                </div>
+            </div>
+
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <div class="card g-mb-30 custom-card">
+                            <div class="card-body">
+                                <div class="container" id="commentsList">
+                                    {% for commentaire in publication.commentaires %}
+                                        {% if commentaire.parentComment is null %}
+                                            <div class="media g-mb-30 media-comment">
+                                                <div class="d-flex align-items-start">
+                                                    <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="{{ commentaire.idUser.avatar }}" alt="Image Description" style="margin-right: 10px;">
+                                                    <div class="media-body u-shadow-v18 g-pa-30 custom-background">
+                                                        <h5 class="h5 g-color-gray-dark-v1 mb-0" style="font-size: 14px;"><span class="text-primary">{{ commentaire.idUser.nom }}</span>: {{ commentaire.contenu }}</h5>
+                                                        <ul class="list-inline d-sm-flex my-0">
+                                                            <li class="list-inline-item ml-auto">
+                                                                <a class="u-link-v5 g-color-gray-dark-v4 g-color-primary--hover reply-link" href="{{ path('reply_to_comment', {'parentId': commentaire.id}) }}" style="font-size: 12px;">
+                                                                    <i class="fa fa-reply g-pos-rel g-top-1 g-mr-3"></i>
+                                                                    Reply
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Loop through replies -->
+                                            {% for reply in publication.commentaires %}
+                                                {% if reply.parentComment == commentaire %}
+                                                    <div class="media g-mb-30 media-comment" style="margin-left: 50px;">
+                                                        <div class="d-flex align-items-start">
+                                                            <img class="d-flex g-width-50 g-height-50 rounded-circle g-mt-3 g-mr-15" src="{{ reply.idUser.avatar }}" alt="Image Description" style="margin-right: 10px;">
+                                                            <div class="media-body u-shadow-v18 g-pa-30 custom-background">
+                                                                <h5 class="h5 g-color-gray-dark-v1 mb-0" style="font-size: 14px;"><span class="text-primary">{{ reply.idUser.nom }}</span>: {{ reply.contenu }}</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            
+            
+            
+            
+
+            <div class="text-center mt-3">
+                <a href="{{ path('app_publication_index') }}" class="btn btn-primary">Back to List</a>
+                <a href="{{ path('app_publication_edit', {'id': publication.id}) }}" class="btn btn-secondary">Edit</a>
+            </div>
+
+            <div id="commentFormSection">
+                <div class="container mt-5">
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-md-8">
+                            <h5>Add a Comment</h5>
+                            {{ form_start(commentForm, {'attr': {'novalidate': 'novalidate'}}) }}
+            
+                            <div class="form-group">
+                                {{ form_label(commentForm.contenu, null, {'label_attr': {'class': 'control-label'}}) }}
+                                {{ form_widget(commentForm.contenu, {'attr': {'class': 'form-control'}}) }}
+                                {% if form_errors(commentForm.contenu) %}
+                                    <div class="alert alert-danger">
+                                        {{ form_errors(commentForm.contenu) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+            
+                            <div class="form-group" style="display: none;">
+                                {{ form_label(commentForm.id_user, 'Nom de l utilisateur', {'label_attr': {'class': 'control-label'}}) }}
+                                {{ form_widget(commentForm.id_user, {'attr': {'class': 'form-control'}}) }}
+                                {% if form_errors(commentForm.id_user) %}
+                                    <div class="alert alert-danger">
+                                        {{ form_errors(commentForm.id_user) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+            
+                            <div class="form-group" style="display: none;">
+                                {# Hidden field for id_pub #}
+                                {{ form_label(commentForm.id_pub, 'Publication', {'label_attr': {'class': 'control-label'}}) }}
+                                {{ form_widget(commentForm.id_pub, {'attr': {'class': 'form-control'}}) }}
+                                {% if form_errors(commentForm.id_pub) %}
+                                    <div class="alert alert-danger">
+                                        {{ form_errors(commentForm.id_pub) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group" style="display: none;" >
+                                {# Select field for parent comment #}
+                                {{ form_label(commentForm.parentComment, 'Parent Comment', {'label_attr': {'class': 'control-label'}}) }}
+                                {{ form_widget(commentForm.parentComment, {'attr': {'class': 'form-control'}}) }}
+                                {% if form_errors(commentForm.parentComment) %}
+                                    <div class="alert alert-danger">
+                                        {{ form_errors(commentForm.parentComment) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+            
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+            
+                            {{ form_end(commentForm) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                const toggleComments = document.getElementById('toggleComments');
+                const commentsList = document.getElementById('commentsList');
+            
+                toggleComments.addEventListener('change', function() {
+                    if (toggleComments.checked) {
+                        commentsList.style.display = 'block';
+                    } else {
+                        commentsList.style.display = 'none';
+                    }
+                });
+            
+                $(document).ready(function() {
+                    $('.reply-link').click(function(e) {
+                        // Allow the default behavior of the anchor tag
+                        // This will cause the browser to redirect to the specified URL
+                        return true;
+                    });
+                });
+
+
+            </script>
+            
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+<br><br><br><br><br><br><br><br><br><br><br>
+   
+</html>
+
+        
+        
+        
+        
+{% endblock %}

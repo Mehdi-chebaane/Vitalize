@@ -1,0 +1,38 @@
+{% extends 'admin/base.html.twig' %}
+
+
+
+{% block body %}
+<main>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 10%;">Id</th>
+                <th style="width: 30%;">Date and Time</th>
+                <th style="width: 40%;">Lien</th>
+                <th style="width: 20%;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rendez_vou in rendez_vouses %}
+            <tr>
+                <td>{{ rendez_vou.rdvId }}</td>
+                <td>{{ rendez_vou.date ? rendez_vou.date|date('Y-m-d H-i') : '' }}</td>
+                <td>{{ rendez_vou.lien }}</td>
+                <td>
+                    <a href="{{ path('Admin_rendez_show', {'id': rendez_vou.rdvId}) }}" class="btn btn-info btn-sm">Show</a>
+                    <a href="{{ path('Admin_rendez_edit', {'id': rendez_vou.rdvId}) }}" class="btn btn-primary btn-sm">Edit</a>
+ 
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">No records found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_admin_rendez_vous') }}" class="btn btn-success">Create New</a>
+</main>
+{% endblock %}

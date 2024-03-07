@@ -1,0 +1,88 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Edit Publication{% endblock %}
+
+{% block body %}
+
+<br><br><br><br><br>
+<div class="container">
+    <h1>Edit Publication</h1>
+
+    <div class="form-container">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+        <div class="form-group">
+            {{ form_label(form.type) }}
+            {{ form_widget(form.type, {'attr': {'class': 'form-control'}}) }}
+            {% if form_errors(form.type) %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form.type) }}
+                </div>
+            {% endif %}
+            
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.titre) }}
+            {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+            {% if form_errors(form.titre) %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form.titre) }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+            {% if form_errors(form.description) %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form.description) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.image) }}
+            {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+            {% if form_errors(form.image) %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form.image) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.video) }}
+            {{ form_widget(form.video, {'attr': {'class': 'form-control'}}) }}
+            {% if form_errors(form.video) %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form.video) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(form.id_user) }}
+            {{ form_widget(form.id_user, {'attr': {'class': 'form-control'}}) }}
+            {% if form_errors(form.id_user) %}
+                <div class="alert alert-danger">
+                    {{ form_errors(form.id_user) }}
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Update</button>
+
+        {{ form_end(form) }}
+    </div>
+
+    <a href="{{ path('app_publication_index') }}" class="back-link">Back to List</a>
+
+</div>
+
+
+<br><br><br><br><br><br><br><br><br><br><br>
+    
+
+{% endblock %}

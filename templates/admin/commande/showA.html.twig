@@ -1,0 +1,48 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Commande{% endblock %}
+
+{% block body %}
+    <h1>Commande</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ commande.id }}</td>
+            </tr>
+            <tr>
+                <th>MealQuantities</th>
+                <td>{{ commande.mealQuantities ? commande.mealQuantities|json_encode : '' }}</td>
+            </tr>
+            <tr>
+                <th>MethodePaiement</th>
+                <td>{{ commande.methodePaiement }}</td>
+            </tr>
+            <tr>
+                <th>EtatCommande</th>
+                <td>{{ commande.etatCommande }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ commande.date ? commande.date|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>InstructionSpeciale</th>
+                <td>{{ commande.instructionSpeciale }}</td>
+            </tr>
+            <tr>
+                <th>PrixTotal</th>
+                <td>{{ commande.prixtotal }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_commande_index') }}">back to list</a>
+
+    <a href="{{ path('app_commande_edit', {'id': commande.id}) }}">edit</a>
+    <a href="{{ path('admin_commande_edit', {'id': commande.id}) }}">admin</a>
+    
+
+    {{ include('front/commande/_delete_form.html.twig') }}
+{% endblock %}

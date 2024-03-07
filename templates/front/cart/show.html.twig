@@ -1,0 +1,66 @@
+{% extends 'front/ghofrane/cart.html.twig' %}
+
+{% block title %}Cart{% endblock %}
+
+{% block body %}
+
+    
+    {% if meals|length > 0 %}
+    
+    <div class='p-4'>
+    <h1>Votre Panier</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for meal in meals %}
+                    <tr>
+                        <td>
+                        
+                            {{ meal.nomRepas }}
+                            
+                        </td>
+                        <td>
+                            <form action="{{ path('update_cart', {'id': meal.id}) }}" method="post">
+                           
+                                <button type="submit" class="btn btn-sm btn-secondary" name="action" value="decrease">-</button>
+                                <span>{{ cart[meal.id] }}</span>
+                                <button type="submit" class="btn btn-sm btn-primary" name="action" value="increase">+</button>
+                                
+                            </form>
+                        </td>
+                        <td>
+                            {{ meal.prix }} TND
+                        </td>
+                        <td>
+                            {{ meal.prix * cart[meal.id] }} TND
+                        </td>
+                       
+                    </tr>
+                {% endfor %}
+                <tr>
+            <td colspan="3" class="text-end"><strong>Total:</strong></td>
+            <td><strong>{{ totalAmount }} TND</strong></td>
+            <form action="{{ path('clear_cart') }}" method="post">
+                <button type="submit" class="btn btn-danger">Clear Cart</button>
+            </form>
+        </tr>
+            </tbody>
+        </table>
+         <form action="{{ path('app_meal') }}" method="post">
+            <button type="submit" class="btn btn-achats">Continuer mes achats</button>
+        </form>
+        <form action="{{ path('app_commande_new') }}" method="post">
+            <button type="submit" class="btn btn-success">Commander</button>
+        </form>
+        <div>
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+{% endblock %}

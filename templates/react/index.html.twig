@@ -1,0 +1,36 @@
+
+{% block title %}React index{% endblock %}
+
+{% block body %}
+    <h1>React index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>LikeCount</th>
+                <th>DislikeCount</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for react in reacts %}
+            <tr>
+                <td>{{ react.id }}</td>
+                <td>{{ react.LikeCount }}</td>
+                <td>{{ react.DislikeCount }}</td>
+                <td>
+                    <a href="{{ path('app_react_show', {'id': react.id}) }}">show</a>
+                    <a href="{{ path('app_react_edit', {'id': react.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_react_new') }}">Create new</a>
+{% endblock %}

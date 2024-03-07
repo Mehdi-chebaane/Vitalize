@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+         
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>{% block title %} Admin{% endblock %}</title>
+   
+       
+
+
+       
+        {% block CSS %}
+    <link rel="stylesheet" href="{{asset("back/bootstrap/css/bootstrap.min.css")}}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Aclonica&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Alatsi&display=swap">
+    <link rel="stylesheet" href="{{asset("back/fonts/fontawesome-all.min.css")}}">
+    <link rel="stylesheet" href="{{asset("back/fonts/font-awesome.min.css")}}">
+    <link rel="stylesheet" href="{{asset("back/fonts/ionicons.min.css")}}">
+    <link rel="stylesheet" href="{{asset("back/fonts/fontawesome5-overrides.min.css")}}">
+    <link rel="stylesheet" href="{{asset("back/css/Add-Another-Button.css")}}">
+    <link rel="stylesheet" href="{{asset("back/css/Contact-Form-v2-Modal--Full-with-Google-Map.css")}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="{{asset("back/css/Login-Form-Dark.css")}}">
+    <link rel="stylesheet" href="{{asset("back/css/Ludens---Country-State-City-selects.css")}}">
+    <link rel="stylesheet" href="{{asset("back/css/Map-Clean.css")}}">
+    <link rel="stylesheet" href="{{asset("back/css/Newsletter-Subscription-Form.css")}}">
+    <link rel="stylesheet" href="{{asset("back/css/project-card.css")}}">
+    <link rel="stylesheet" href="{{asset("back/css/Registration-Form-with-Photo.css")}}">
+    <link rel="stylesheet" href="{{asset("back/css/Select2-JS-Plugin.css")}}">
+ 
+  
+        {% endblock %}
+
+         </head>
+
+   
+<body >
+<section class="login-dark" style="background: #0f0a23;">
+        <form method="post">
+            <h2 class="visually-hidden">Login Form</h2>
+            <div class="illustration"><i class="icon ion-ios-locked-outline"></i></div>
+            <div class="mb-3"><input class="form-control" type="email" name="email" placeholder="Email"></div>
+            <div class="mb-3"><input class="form-control" type="password" name="password" placeholder="Password"></div>
+            <div class="mb-3"><a class="btn btn-primary d-block w-100" role="button" href="index.html">Log In</a></div><a class="forgot" href="forgot-password.html">Forgot your email or password?</a>
+        </form>
+    </section>
+
+    {% block javascripts %}
+
+    <script src="{{asset("back/bootstrap/js/bootstrap.min.js")}}"></script>
+    <script src="{{asset("back/js/chart.min.js")}}"></script>
+    <script src="{{asset("back/js/bs-init.js")}}"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="{{asset("back/js/Select2-JS-Plugin-1.js")}}"></script>
+    <script src="{{asset("back/js/Select2-JS-Plugin.js")}}"></script>
+    <script src="{{asset("back/js/Contact-Form-v2-Modal--Full-with-Google-Map.js")}}"></script>
+    <script src="{{asset("back/js/Dynamically-Add-Remove-Table-Row.js")}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://geodata.solutions/includes/countrystate.js"></script>
+    <script src="{{asset("back/js/theme.js")}}"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
+     {% endblock %}
+         </body>
+</html>

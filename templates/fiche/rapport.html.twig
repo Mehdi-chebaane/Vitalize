@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fichepatient Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2; /* Light gray background */
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff; /* White background */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #008cba; /* Blue color */
+        }
+        .attributes {
+            margin-top: 20px;
+        }
+        .attribute {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ccc; /* Gray border bottom */
+            padding-bottom: 10px;
+        }
+        .attribute:last-child {
+            border-bottom: none; /* Remove border bottom for the last attribute */
+        }
+        .attribute strong {
+            color: #009688; /* Teal color */
+            font-weight: bold;
+        }
+        h2 {
+            color: Black; /* Teal color */
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fichepatient Details</h1>
+        
+        <div class="attributes">
+            <div class="attribute">
+                <h2><strong>Name:</strong> {{ attributes.nom }}</h2>
+            </div>
+            <div class="attribute">
+                <h2><strong>Last Name:</strong> {{ attributes.prenom }}</h2>
+            </div>
+            {% for attribute, value in attributes %}
+                {% if attribute not in ['nom', 'prenom'] %}
+                    <div class="attribute">
+                        <strong>{{ attribute }}:</strong> {{ value }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

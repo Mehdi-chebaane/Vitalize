@@ -1,0 +1,12 @@
+
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_row(form.nomRepas ,{'attr': {'class': 'form-control'}}) }} {# Affiche le champ nomRepas avec les erreurs de validation #}
+    {{ form_row(form.ingredients,{'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.recette,{'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.typeRepas,{'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.image ,{'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.nombrePersonnes,{'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.dureePreparation,{'attr': {'class': 'form-control'}})}}
+    {{ form_row(form.prix ,{'attr': {'class': 'form-control'}})}}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

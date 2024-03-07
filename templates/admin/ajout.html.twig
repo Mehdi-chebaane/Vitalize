@@ -1,0 +1,88 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Admin{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1>Ajouter un User</h1>
+    <hr>
+    {{ form_start(form, {'attr': {'novalidate':'novalidate'}}) }}
+    <form class="row g-3 " id="contactForm-1" action="{{ path('admin_ajout1') }}" method="post" enctype="multipart/form-data" >
+        <div class="row row-cols-1 justify-content-center align-items-center">
+            <div class="col-md-6">
+                
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-12 col-md-6 m-auto" id="message-1">
+                <h2 class="h4"><i class="fa fa-info-circle"></i>&nbsp;Info :<small><small class="required-input"></small></small></h2>
+                <hr>
+
+                {# Nom Field #}
+                <div class="form-group mb-3">
+                    <div class="input-group">
+                        {{ form_row(form.nom, {'attr': {'class': 'form-control', 'required': 'required'}}) }}
+                    </div>
+                </div>
+                
+                {# Prenom Field #}
+                <div class="form-group mb-3">
+                    <span class="required-input">*</span>
+                    <div class="input-group">
+                        {{ form_row(form.prenom, {'attr': {'class': 'form-control', 'id': 'from-prenom', 'required': 'required'}}) }}
+                    </div>
+                </div>
+
+                {# Email Field #}
+                <div class="form-group mb-3">
+                    <span class="required-input">*</span>
+                    <div class="input-group">
+                        {{ form_row(form.email, {'attr': {'class': 'form-control', 'id': 'from-email', 'required': 'required'}}) }}
+                    </div>
+                </div>
+
+                {# tel Field #}
+                <div class="form-group mb-3">
+                    <span class="required-input">*</span>
+                    <div class="input-group">
+                        {{ form_row(form.tel, {'attr': {'class': 'form-control', 'id': 'from-email', 'required': 'required'}}) }}
+                    </div>
+                </div>
+
+                {# Password Field #}
+                <div class="form-group mb-3">
+                    <span class="required-input">*</span>
+                    <div class="input-group">
+                        {{ form_row(form.password, {'attr': {'class': 'form-control', 'id': 'from-password', 'required': 'required'}}) }}
+                    </div>
+                </div>
+
+                {# Roles Field #}
+                <div class="form-group mb-3">
+                    <span class="required-input">*</span>
+                    <div class="input-group">
+                        {{ form_row(form.roles , {'attr': {'novalidate':'novalidate'}}) }}
+                    </div>
+                </div>
+<div class="form-group mb-3">
+    {{ form_row(form._token) }}
+</div>
+                {# Save and Reset Buttons #}
+                <div class="form-group mb-3">
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-dark d-block w-100" type="reset" style="background: rgb(160,18,18);"><i class="fa fa-undo"></i> Réinitialiser</button>
+                        </div>
+                        <div class="col">
+                            {{ form_row(form.save, {'label': 'Créer', 'attr': {'class': 'btn btn-dark d-block w-100', 'style': 'background: rgb(208,145,53);'}}) }}
+                        
+                     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+       {{ form_end(form) }}</div>
+</div>
+{% endblock %}
