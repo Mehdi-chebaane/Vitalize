@@ -36,9 +36,6 @@ class EvenementController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $evenement = new Evenement();
-        $currentUser = $this->getUser();
-        $organizerName = $currentUser->getNom();
-        $evenement->setOrganisateur($organizerName);
         $form = $this->createForm(EvenementType::class, $evenement);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -134,9 +131,6 @@ class EvenementController extends AbstractController
     public function newadmin(Request $request, EntityManagerInterface $entityManager): Response
     {
         $evenement = new Evenement();
-        $currentUser = $this->getUser();
-        $organizerName = $currentUser->getNom();
-        $evenement->setOrganisateur($organizerName);
         $form = $this->createForm(EvenementType::class, $evenement);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -201,10 +195,7 @@ class EvenementController extends AbstractController
     {
         $idevenement = $request->request->get('idevenement');
         $action = $request->request->get('action');
-        $currentUser = $this->getUser();
-    
-    
-            $userId = $currentUser->getId();
+
         $evenement = $evenementRepository->find($idevenement);
 
         if (!$evenement) {
@@ -212,9 +203,9 @@ class EvenementController extends AbstractController
         }
 
         if       ($action === 'add') {
-            $evenementRepository->addReservation($idevenement,$userId);
+            $evenementRepository->addReservation($idevenement,150);
         } elseif ($action === 'delete') {
-            $evenementRepository->deleteReservation($idevenement,$userId);
+            $evenementRepository->deleteReservation($idevenement,150);
         }
         
 
@@ -225,11 +216,7 @@ class EvenementController extends AbstractController
         public function handleReservationRecherche(Request $request, EvenementRepository $evenementRepository)
         {
             $idevenement = $request->attributes->get('idevenement');
-            
-            $currentUser = $this->getUser();
-    
-    
-            $userId = $currentUser->getId();
+            $userid = 150; // Replace with the actual user ID
 
             $reservationExists = $evenementRepository->Recherche($idevenement, $userid);
 

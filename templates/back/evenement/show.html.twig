@@ -1,0 +1,76 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Evenement
+{% endblock %}
+
+{% block body %}
+	<h1>Evenement</h1>
+
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Idevenement</th>
+				<td>{{ evenement.idevenement }}</td>
+			</tr>
+			<tr>
+				<th>Nom</th>
+				<td>{{ evenement.nom }}</td>
+			</tr>
+			<tr>
+				<th>Date</th>
+				<td>{{ evenement.date ? evenement.date|date('Y-m-d') : '' }}</td>
+			</tr>
+			<tr>
+				<th>Localisation</th>
+				<td>{{ evenement.localisation }}</td>
+			</tr>
+			<tr>
+				<th>Capacité</th>
+				<td>{{ evenement.capacite }}</td>
+			</tr>
+			<tr>
+				<th>Organisateur</th>
+				<td>{{ evenement.organisateur }}</td>
+			</tr>
+			<tr>
+				<th>Description</th>
+				<td>{{ evenement.description }}</td>
+			</tr>
+			<tr>
+				<th>Liste d'Activité</th>
+				<td>
+					{% if activites is not empty %}
+						<table class="table">
+							<thead>
+								<th>ID D'activite</th>
+								<th>Type D'activite</th>
+								<th>Description</th>
+								<th>Dureé</th>
+							</thead>
+							
+								{% for activite in activites %}
+								<tbody>	<td>{{ activite.getId_Activite() }}</td>
+									<td>{{ activite.getTypeActivite() }}</td>
+									<td>{{ activite.getDescription() }}</td>
+									<td>{{ activite.getDuree() }}</td></tbody>
+								{% endfor %}
+							
+						</table>
+
+					{% else %}
+						No activities associated with this event.
+					{% endif %}
+				</td>
+			</tr>
+		</tbody>
+	</td>
+</tr></tbody></table>
+<a href="{{ path('adminapp_evenement_edit', {'idevenement': evenement.idevenement}) }}" class="btn btn-warning">Edit</a>
+<a href="{{ path('adminapp_evenement_index') }}" class="btn btn-danger">back to list</a>
+<form method="post" action="{{ path('adminapp_evenement_delete', {'idevenement': evenement.idevenement}) }}" >
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.idevenement) }}">
+    <button class="btn btn-primary">Delete</button>
+</form>
+
+</div>
+{% endblock  %}

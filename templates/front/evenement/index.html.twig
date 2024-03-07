@@ -1,0 +1,213 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vitalize
+{% endblock %}
+{% block stylesheet %}
+	.container {
+																			  display: flex; /* Enables vertical centering */
+																			  justify-content: center; /* Horizontally center content */
+																			  align-items: center; /* Vertically center content */
+																			  width: 80%; /* Adjust width as needed */
+																			  height: 80%; /* Adjust height as needed */
+																			  margin: 0 auto; /* Add margin for spacing */
+																			  border: 1px solid #ccc; /* Optional border for visualization */
+																			  padding: 20px; /* Optional padding for spacing */
+																			        }
+																					
+			
+			
+			.reservation-button:hover {
+			    background-color: rgb(215, 121, 118); /* Adjust hover color if needed */
+			}
+
+
+{% endblock %}
+{% block body %}
+	<body>
+		<div class="container">
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>
+							<h1>Evenement</h1>
+						</th>
+						<th>
+							<a href="{{ path('app_activite_index') }}" class="btn btn-info">Table Activité</a>
+						</th>
+					</tr>
+				</thead>
+			</table>
+
+			<div>
+					<label for="sort">Sort By:</label>
+					<select id="sort" name="sort" onchange="location = this.value;">
+						<option value="{{ path('app_evenement_index', {'sort': 'nom'}) }}" {% if sort == 'nom' %} selected {% endif %}>Nom</option>
+						<option value="{{ path('app_evenement_index', {'sort': 'date'}) }}" {% if sort == 'date' %} selected {% endif %}>Date</option>
+						<option value="{{ path('app_evenement_index', {'sort': 'capacite'}) }}" {% if sort == 'capacite' %} selected {% endif %}>Capacite</option>
+					</select>
+
+
+					<form action="{{ path('app_evenement_index') }}" method="GET">
+						<label for="search-input">Search:</label>
+						<input type="text" id="search-input" name="search" placeholder="Search by Nom" value="{{ search }}">
+						<button type="submit">Search</button>
+					</form>
+				</div>
+			<div class="row">
+				{% for evenement in evenements %}
+					<div class="col-lg-4" style="margin-bottom: 20px;">
+						<div class="card">
+							<div>
+								<img src="{{ asset('uploads/' ~ evenement.imageEve) }}" style="width: 407px; height: 200px;" alt="Event Image">
+							</div>
+
+							<div class="card-body">
+								<div class="card__info">
+									<span class="card__category"></span>
+									<h3 class="card__title">
+										{{ evenement.nom }}
+									</h3>
+									<div>
+										<span class="card__category">
+											Location :
+											{{ evenement.localisation }}
+										</span>
+									</div>
+									<div>
+
+										<span class="card__category">
+											Capacite :
+											{{ evenement.capacite }}
+										</span>
+									</div>
+									<div>
+
+										<span class="card__category">
+											Organisateur:
+											{{ evenement.organisateur }}
+										</span>
+									</div>
+
+									<span class="card__by">
+										<a href="{{ path('app_evenement_show', {'idevenement': evenement.idevenement}) }}" class="card__author" title="author">
+											Show
+										</a>
+									</span>
+									<span class="card__by" style="margin-left: 70px;">
+										<a href="{{ path('app_evenement_edit', {'idevenement': evenement.idevenement}) }}" class="card__author" title="author">
+											Edit
+										</a>
+									</span>
+									<span style="position: absolute; top: 0; right: 15px; font-size: 40px;">
+										<style>
+											.reservation-container {
+												position: absolute;
+												top: 0;
+												right: 0;
+											}
+
+											.reservation-button {
+												background-color: rgb(245, 151, 148);
+												color: #fff;
+												border: none;
+												padding: 10px 15px;
+												font-size: 16px;
+												width: 200px;
+												cursor: pointer;
+												border-radius: 5px;
+
+											}
+
+											.reservation-button:hover {
+												background-color: rgb(215, 121, 118);
+											}
+										</style>
+
+
+										<div class="reservation-container">
+											<button class="reservation-button" onclick="toggleReservation(event, {{ evenement.idevenement }})">
+												<span id="reservationText{{ evenement.idevenement }}"></span>
+											</button>
+										</div>
+
+										<script async>
+											document.addEventListener('DOMContentLoaded', function () {
+const idevenement = {{ evenement.idevenement }};
+const reservationText = document.getElementById('reservationText' + idevenement);
+
+checkReservationStatus(idevenement, reservationText);
+});
+
+function toggleReservation(event, idevenement) {
+event.preventDefault();
+const reservationText = document.getElementById('reservationText' + idevenement);
+
+if (reservationText.innerText === 'Annuler reservation') {
+sendReservationRequest(idevenement, 'delete');
+} else {
+sendReservationRequest(idevenement, 'add');
+}
+}
+
+function sendReservationRequest(idevenement, action) {
+const xhr = new XMLHttpRequest();
+xhr.open('POST', '/evenement/n/handle-reservation');
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+xhr.onload = function () {
+if (xhr.status === 200) {
+const response = JSON.parse(xhr.responseText);
+console.log(response);
+
+const reservationText = document.getElementById('reservationText' + idevenement);
+checkReservationStatus(idevenement, reservationText);
+}
+};
+
+const data = `idevenement=${idevenement}&action=${action}`;
+xhr.send(data);
+}
+
+function checkReservationStatus(idevenement, reservationText) {
+const xhr = new XMLHttpRequest();
+xhr.open('POST', `/evenement/n/handle-reservation/${idevenement}/recherche`);
+xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+xhr.onload = function () {
+if (xhr.status === 200) {
+const response = JSON.parse(xhr.responseText);
+console.log(response);
+
+if (response.success) {
+reservationText.innerText = 'Annuler reservation';
+} else {
+reservationText.innerText = 'Ajouter reservation';
+}
+}
+};
+
+const data = `idevenement=${idevenement}`;
+xhr.send(data);
+}
+										</script>
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+					{% else %}
+						<tr>
+							<td colspan="5">no records found</td>
+						</tr>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+
+
+	</body>
+
+{% endblock %}

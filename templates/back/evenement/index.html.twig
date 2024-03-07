@@ -1,0 +1,139 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Vitalize
+{% endblock %}
+{% block stylesheet %}
+	.container {
+								  display: flex; /* Enables vertical centering */
+								  justify-content: center; /* Horizontally center content */
+								  align-items: center; /* Vertically center content */
+								  width: 80%; /* Adjust width as needed */
+								  height: 80%; /* Adjust height as needed */
+								  margin: 0 auto; /* Add margin for spacing */
+								  border: 1px solid #ccc; /* Optional border for visualization */
+								  padding: 20px; /* Optional padding for spacing */
+								
+								        }
+										 .card {
+							            margin-top: 40px;
+							
+							            display: flex;
+							            flex-direction: column;
+							            border: 1px solid black;
+							
+							        }
+							
+							        .card:hover {
+							            box-shadow: 0px 30px 18px -8px rgba(0, 0, 0, 0.1);
+							            transform: scale(1.03, 1.03);
+							            cursor: pointer;
+							
+							        }
+							
+							        .card:hover img {
+							            opacity: 80%;
+							            transition: 0.2s all ease-out;
+							            background-size: cover;
+							
+							            top: 0;
+							
+							        }
+							
+							        .card:hover .card-title {
+							            background-color: transparent;
+							            position: relative;
+							        }
+							
+							        .card:hover .card__info-hover {
+							            opacity: 1;
+							        }
+{% endblock %}
+{% block body %}
+	<div class="container">
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+						<h1>Evenement</h1>
+					</th>
+
+				</tr>
+			</thead>
+		</table>
+<div class="container" style="margin-left: 17px;">
+				<div>
+					<label for="sort">Sort By:</label>
+					<select id="sort" name="sort" onchange="location = this.value;">
+						<option value="{{ path('adminapp_evenement_index', {'sort': 'nom'}) }}" {% if sort == 'nom' %} selected {% endif %}>Nom</option>
+						<option value="{{ path('adminapp_evenement_index', {'sort': 'date'}) }}" {% if sort == 'date' %} selected {% endif %}>Date</option>
+						<option value="{{ path('adminapp_evenement_index', {'sort': 'capacite'}) }}" {% if sort == 'capacite' %} selected {% endif %}>Capacite</option>
+					</select>
+
+
+					<form action="{{ path('adminapp_evenement_index') }}" method="GET">
+						<label for="search-input">Search:</label>
+						<input type="text" id="search-input" name="search" placeholder="Search by Nom" value="{{ search }}">
+						<button type="submit">Search</button>
+					</form>
+				</div>
+			</div>
+		<div class="container" style="margin-left: 17px;">
+			<div class="row">
+				{% for evenement in evenements %}
+					<div class="col-lg-4" style="margin-bottom: 20px;">
+						<div class="card">
+							<div>
+								<img src="{{ asset('uploads/' ~ evenement.imageEve) }}" style="width: 359px; height: 200px;" alt="Event Image">
+							</div>
+
+							<div class="card-body">
+								<div class="card__info">
+									<span class="card__category"></span>
+									<h3 class="card__title">
+										{{ evenement.nom }}
+									</h3>
+									<div>
+										<span class="card__category">
+											Location :
+											{{ evenement.localisation }}
+										</span>
+									</div>
+									<div>
+
+										<span class="card__category">
+											Capacite :
+											{{ evenement.capacite }}
+										</span>
+									</div>
+									<div>
+
+										<span class="card__category">
+											Organisateur:
+											{{ evenement.organisateur }}
+										</span>
+									</div>
+
+									<span class="card__by">
+										<a href="{{ path('adminapp_evenement_show', {'idevenement': evenement.idevenement}) }}" class="card__author" title="author">
+											Show
+										</a>
+									</span>
+									<span class="card__by"style="margin-left: 70px;">
+										<a href="{{ path('adminapp_evenement_edit', {'idevenement': evenement.idevenement}) }}" class="card__author" title="author">
+											Edit
+										</a>
+									</span>
+									<td></td>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>{% endblock %}

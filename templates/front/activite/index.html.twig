@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vitalize
+
+{% endblock %}
+
+
+{% block stylesheet %}
+	<stylesheet>
+		.container {
+												  display: flex; /* Enables vertical centering */
+												  justify-content: center; /* Horizontally center content */
+												  align-items: center; /* Vertically center content */
+												  width: 80%; /* Adjust width as needed */
+												  height: 80%; /* Adjust height as needed */
+												  margin: 0 auto; /* Add margin for spacing */
+												  border: 1px solid #ccc; /* Optional border for visualization */
+												  padding: 20px; /* Optional padding for spacing */
+												        }
+							
+							        .card {
+							            margin-top: 40px;
+							
+							            display: flex;
+							            flex-direction: column;
+							            border: 1px solid black;
+							
+							        }
+							
+							        .card:hover {
+							            box-shadow: 0px 30px 18px -8px rgba(0, 0, 0, 0.1);
+							            transform: scale(1.03, 1.03);
+							            cursor: pointer;
+							
+							        }
+							
+							        .card:hover img {
+							            opacity: 80%;
+							            transition: 0.2s all ease-out;
+							            background-size: cover;
+							
+							            top: 0;
+							
+							        }
+							
+							        .card:hover .card-title {
+							            background-color: transparent;
+							            position: relative;
+							        }
+							
+							        .card:hover .card__info-hover {
+							            opacity: 1;
+							        }
+	</stylesheet>
+
+{% endblock %}
+{% block body %}
+	<div class="container">
+
+
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+						<h1>Activite</h1>
+					</th>
+					<th>
+						<a href="{{ path('app_evenement_index') }}" class="btn btn-info">Table Evenement</a>
+					</th>
+				</tr>
+			</thead>
+		</table>
+		<div class="container" style="margin-left: 17px;">
+			<div>
+				<label for="sort">Sort By:</label>
+				<select id="sort" name="sort" onchange="location = this.value;">
+					<option value="{{ path('app_activite_index', {'sort': 'type_activite'}) }}" {% if sort == 'type_activite' %} selected {% endif %}>Type d'activite</option>
+					<option value="{{ path('app_activite_index', {'sort': 'duree'}) }}" {% if sort == 'duree' %} selected {% endif %}>Durée</option>
+				</select>
+
+
+				<form action="{{ path('app_activite_index') }}" method="GET">
+					<label for="search-input">Search:</label>
+					<input type="text" id="search-input" name="search" placeholder="Recherche par type" value="{{ search }}">
+					<button type="submit">Search</button>
+				</form>
+			</div>
+		</div>
+		<div class="container" style="margin-left: 17px;">
+			<div class="row">
+				<tbody>
+					{% for activite in activites %}
+						<div class="col-lg-4" style="margin-bottom: 20px;">
+							<div class="card">
+								<div>
+									<img src="{{ asset('uploads/' ~ activite.imageAct) }}" style="width: 407px; height: 200px;" alt="Activity Image">
+								</div>
+
+								<div class="card-body">
+									<div class="card__info">
+
+										<h3 class="card__title">
+											{{ activite.typeActivite }}
+										</h3>
+										<span class="card__category">
+
+											Durée :
+											{{ activite.duree }}
+											min
+
+										</span>
+										<div>
+
+											<span class="card__by">
+												<a href="{{ path('app_activite_show', {'id_activite': activite.id_activite}) }}" class="card__author" title="author">
+													Show
+												</a>
+
+											</span>
+											<span class="card__by" style="margin-left: 70px;">
+												<a href="{{ path('app_activite_edit', {'id_activite': activite.id_activite}) }}" class="card__author" title="author">
+													Edit
+												</a>
+
+											</span>
+										</div>
+										<td></td>
+									</div>
+
+
+								</div>
+							</div>
+						</div>
+					{% else %}
+						<tr>
+							<td colspan="5">no records found</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</div>
+		</div>
+	</div>
+{% endblock %}

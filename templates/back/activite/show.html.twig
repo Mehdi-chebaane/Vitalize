@@ -1,0 +1,54 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Activite
+{% endblock %}
+{% block stylesheet %}
+	.container {
+	  display: flex; /* Enables vertical centering */
+	  justify-content: center; /* Horizontally center content */
+	  align-items: center; /* Vertically center content */
+	  width: 80%; /* Adjust width as needed */
+	  height: 80%; /* Adjust height as needed */
+	  margin: 0 auto; /* Add margin for spacing */
+	  border: 1px solid #ccc; /* Optional border for visualization */
+	  padding: 20px; /* Optional padding for spacing */
+	
+	        }
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div>
+			<h1>Activite</h1>
+		</div>
+		<table class="table">
+			<tbody>
+				<tr>
+					<th>Id_activite</th>
+					<td>{{ activite.id_Activite }}</td>
+				</tr>
+				<tr>
+					<th>Type_activite</th>
+					<td>{{ activite.typeActivite }}</td>
+				</tr>
+				<tr>
+					<th>Description</th>
+					<td>{{ activite.Description }}</td>
+				</tr>
+				<tr>
+					<th>Duree</th>
+					<td>{{ activite.duree }}</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<a href="{{ path('adminapp_activite_edit', {'id_activite': activite.id_activite}) }}" class="btn btn-warning">Edit</a>
+		<a href="{{ path('adminapp_activite_index') }}" class="btn btn-danger">back to list</a>
+		<form method="post" action="{{ path('app_activite_delete', {'id_activite': activite.id_activite}) }}">
+			<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ activite.id_activite) }}">
+			<button class="btn btn-primary">Delete</button>
+		</div>
+
+
+	</form>
+{% endblock %}
