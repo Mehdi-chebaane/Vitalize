@@ -108,7 +108,7 @@ class ActiviteController extends AbstractController
         $activite = $activiteRepository->searchAndSort($search, $sort);
 
             
-        return $this->render('admin/activite/index.html.twig', [
+        return $this->render('back/activite/index.html.twig', [
             'activites' => $activite,           
             'sort' => $sort, 
             'search'=>$search
@@ -135,7 +135,7 @@ class ActiviteController extends AbstractController
             return $this->redirectToRoute('adminapp_activite_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('admin/activite/new.html.twig', [
+        return $this->render('back/activite/new.html.twig', [
             'activite' => $activite,
             'form' => $form->createView(),
         ]);
@@ -144,7 +144,7 @@ class ActiviteController extends AbstractController
     #[Route('/{id_activite}/admin', name: 'adminapp_activite_show', methods: ['GET'])]
     public function showadmin(Activite $activite): Response
     {
-        return $this->render('admin/activite/show.html.twig', [
+        return $this->render('back/activite/show.html.twig', [
             'activite' => $activite,
         ]);
     }
@@ -170,7 +170,7 @@ class ActiviteController extends AbstractController
             return $this->redirectToRoute('adminapp_activite_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('admin/activite/edit.html.twig', [
+        return $this->render('back/activite/edit.html.twig', [
             'activite' => $activite,
             'form' => $form->createView(),
         ]);

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+	<body>
+<div style="margin bot 100px;">a<div>
+<div style="margin bot 100px;">a<div>
+<div style="margin bot 100px;">a<div>
+<div style="margin bot 100px;">a<div>
+<div style="margin bot 100px;">a<div>
+
+		<div id="map-container" style="width: 700px; height: 500px; position: relative; left:425px; margin-bot:50px; ">
+
+			<div id="map">
+				<a href="https://www.maptiler.com" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a>
+			</div>
+			<p>
+				<a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener">&copy; MapTiler</a>
+				<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">&copy; OpenStreetMap contributors</a>
+			</p>
+			<script>
+				function toggleMap() {
+const mapContainer = document.getElementById('map-container');
+mapContainer.style.display = (mapContainer.style.display === 'none') ? 'block' : 'none';
+}
+const map = L.map('map').setView([
+36.8993, 10.1894
+], 14); // starting position
+L.tileLayer(`https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.jpg?key=k7HkZl4QR02jUYUjJNsa`, {
+// style URL
+tileSize: 512,
+zoomOffset: -1,
+minZoom: 1,
+attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
+crossOrigin: true
+}).addTo(map);
+			</script>
+		</body>
+	</body>
+</div>{% endblock %}
